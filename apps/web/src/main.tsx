@@ -10,12 +10,15 @@ import '@mantine/carousel/styles.css';
 import '@mantine/dropzone/styles.css';
 
 import { App } from './App';
+import { AuthProvider } from './hooks/use-auth';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <MantineProvider>
-      <Notifications />
-      <App />
+      <AuthProvider>
+        <Notifications />
+        <App />
+      </AuthProvider>
     </MantineProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );

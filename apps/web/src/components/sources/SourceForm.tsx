@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Button, Group, Modal, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { Controller, useForm } from 'react-hook-form';
 
 import type { Source } from '@fazole/common';
 
@@ -99,12 +99,7 @@ export function SourceForm({ opened, source, onClose, onSuccess }: SourceFormPro
             control={control}
             rules={{ required: 'Color is required' }}
             render={({ field }) => (
-              <Select
-                label="Color"
-                data={SOURCE_COLORS}
-                error={errors.color?.message}
-                {...field}
-              />
+              <Select label="Color" data={SOURCE_COLORS} error={errors.color?.message} {...field} />
             )}
           />
 

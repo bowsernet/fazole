@@ -2,9 +2,9 @@ import { useCallback, useState } from 'react';
 import type { ReactElement } from 'react';
 
 import { Button, Group, Stack, Title } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
 
 import type { Source } from '@fazole/common';
+import { IconPlus } from '@tabler/icons-react';
 
 import { SourceForm, SourceTable } from '../../components/sources';
 import { EmptyState, ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
@@ -62,12 +62,7 @@ export function SourcesPage(): ReactElement {
         )}
       </Stack>
 
-      <SourceForm
-        opened={modalOpened}
-        source={editingSource}
-        onClose={handleModalClose}
-        onSuccess={handleSuccess}
-      />
+      <SourceForm opened={modalOpened} source={editingSource} onClose={handleModalClose} onSuccess={handleSuccess} />
     </>
   );
 }

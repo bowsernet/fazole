@@ -4,10 +4,10 @@ import { Link } from 'react-router';
 
 import { Button, Group, Pagination, SegmentedControl, SimpleGrid, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconPlus } from '@tabler/icons-react';
 
-import type { BeanImage, BeanSpecies, PlantType, PodType, BeanColor } from '@fazole/common';
+import type { BeanColor, BeanImage, BeanSpecies, PlantType, PodType } from '@fazole/common';
 import { PAGINATION_PAGE_SIZE } from '@fazole/config';
+import { IconPlus } from '@tabler/icons-react';
 
 import { BeanCard, BeanFilters, BeanTable } from '../../components/beans';
 import type { BeanFiltersState, SortState } from '../../components/beans';
@@ -48,7 +48,7 @@ export function BeanListPage(): ReactElement {
       sortDir: sort.dir,
       page,
     }),
-    [filters, sort, page],
+    [filters, sort, page]
   );
 
   const {
@@ -67,10 +67,10 @@ export function BeanListPage(): ReactElement {
         beansResult.beans.map(async (bean) => {
           const images = await fetchBeanImages(bean.id);
           return [bean.id, images] as const;
-        }),
+        })
       );
       return Object.fromEntries(entries) as Record<string, BeanImage[]>;
-    }, [beansResult]),
+    }, [beansResult])
   );
 
   const yearOptions = useMemo(() => {
@@ -86,7 +86,7 @@ export function BeanListPage(): ReactElement {
 
   function handleSort(field: string): void {
     setSort((prev) =>
-      prev.field === field ? { field, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { field, dir: 'asc' },
+      prev.field === field ? { field, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { field, dir: 'asc' }
     );
     setPage(1);
   }
@@ -121,10 +121,24 @@ export function BeanListPage(): ReactElement {
           </Group>
         </Group>
 
-        {!isLarge && <BeanFilters filters={filters} onChange={handleFiltersChange} sources={sources ?? []} yearOptions={yearOptions} />}
+        {!isLarge && (
+          <BeanFilters
+            filters={filters}
+            onChange={handleFiltersChange}
+            sources={sources ?? []}
+            yearOptions={yearOptions}
+          />
+        )}
 
         <Group align="flex-start" wrap="nowrap" gap="lg">
-          {isLarge && <BeanFilters filters={filters} onChange={handleFiltersChange} sources={sources ?? []} yearOptions={yearOptions} />}
+          {isLarge && (
+            <BeanFilters
+              filters={filters}
+              onChange={handleFiltersChange}
+              sources={sources ?? []}
+              yearOptions={yearOptions}
+            />
+          )}
 
           <Stack gap="md" style={{ flex: 1, minWidth: 0 }}>
             {loading && <LoadingState />}
@@ -140,12 +154,7 @@ export function BeanListPage(): ReactElement {
                     ))}
                   </SimpleGrid>
                 ) : (
-                  <BeanTable
-                    beans={beansResult.beans}
-                    imagesMap={imagesMap ?? {}}
-                    sort={sort}
-                    onSort={handleSort}
-                  />
+                  <BeanTable beans={beansResult.beans} imagesMap={imagesMap ?? {}} sort={sort} onSort={handleSort} />
                 )}
 
                 {totalPages > 1 && (

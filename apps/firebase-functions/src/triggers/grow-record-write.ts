@@ -1,6 +1,6 @@
-import { onDocumentWritten } from 'firebase-functions/v2/firestore';
-import { getFirestore } from 'firebase-admin/firestore';
 import { FIREBASE_REGION } from '@fazole/config';
+import { getFirestore } from 'firebase-admin/firestore';
+import { onDocumentWritten } from 'firebase-functions/v2/firestore';
 
 export const onGrowRecordWrite = onDocumentWritten(
   { document: 'growRecords/{recordId}', region: FIREBASE_REGION },

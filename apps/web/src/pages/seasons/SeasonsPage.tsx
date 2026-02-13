@@ -1,4 +1,4 @@
-import { useCallback, type ReactElement } from 'react';
+import { type ReactElement, useCallback } from 'react';
 
 import { Title } from '@mantine/core';
 
@@ -36,7 +36,12 @@ export function SeasonsPage(): ReactElement {
 
   if (loading) return <LoadingState />;
   if (error) return <ErrorState message={error.message} onRetry={refetch} />;
-  if (!data || data.records.length === 0) return <SeasonsPageShell><EmptyState message="No seasons found." /></SeasonsPageShell>;
+  if (!data || data.records.length === 0)
+    return (
+      <SeasonsPageShell>
+        <EmptyState message="No seasons found." />
+      </SeasonsPageShell>
+    );
 
   return (
     <SeasonsPageShell>

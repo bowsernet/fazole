@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Button, Group, NumberInput, Select, Stack } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
-import { Controller, useForm } from 'react-hook-form';
 
 import type { Bean, GrowRecord } from '@fazole/common';
 
@@ -120,9 +120,7 @@ export function GrowRecordForm({ record, beans, defaultBeanId, onSave, onCancel 
           <Controller
             name="plantDate"
             control={control}
-            render={({ field }) => (
-              <DatePickerInput label="Plant Date" placeholder="Pick date" clearable {...field} />
-            )}
+            render={({ field }) => <DatePickerInput label="Plant Date" placeholder="Pick date" clearable {...field} />}
           />
         </Group>
 
@@ -130,16 +128,12 @@ export function GrowRecordForm({ record, beans, defaultBeanId, onSave, onCancel 
           <Controller
             name="sproutDate"
             control={control}
-            render={({ field }) => (
-              <DatePickerInput label="Sprout Date" placeholder="Pick date" clearable {...field} />
-            )}
+            render={({ field }) => <DatePickerInput label="Sprout Date" placeholder="Pick date" clearable {...field} />}
           />
           <Controller
             name="flowerDate"
             control={control}
-            render={({ field }) => (
-              <DatePickerInput label="Flower Date" placeholder="Pick date" clearable {...field} />
-            )}
+            render={({ field }) => <DatePickerInput label="Flower Date" placeholder="Pick date" clearable {...field} />}
           />
         </Group>
 

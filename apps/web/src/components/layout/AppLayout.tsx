@@ -4,8 +4,8 @@ import { Outlet } from 'react-router';
 import { AppShell, Container } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
-import { AppNavbar } from './AppNavbar';
 import { AppFooter } from './AppFooter';
+import { AppNavbar } from './AppNavbar';
 
 export function AppLayout(): ReactElement {
   const [opened, { toggle }] = useDisclosure(false);

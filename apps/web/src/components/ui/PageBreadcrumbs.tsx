@@ -24,7 +24,7 @@ export function PageBreadcrumbs({ items }: PageBreadcrumbsProps): ReactElement {
           <Text key={item.label} size="sm">
             {item.label}
           </Text>
-        ),
+        )
       )}
     </Breadcrumbs>
   );

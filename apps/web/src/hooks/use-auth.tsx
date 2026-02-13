@@ -1,16 +1,15 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 
+import type { User } from '@fazole/common';
 import {
+  type User as FirebaseUser,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   signOut,
-  type User as FirebaseUser,
 } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-
-import type { User } from '@fazole/common';
 
 import { auth, db } from '../lib/firebase';
 
@@ -59,9 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps): ReactElement {
   const isAdmin = userDoc?.role === 'admin';
 
   return (
-    <AuthContext value={{ firebaseUser, userDoc, loading, isAdmin, signInWithGoogle, logOut }}>
-      {children}
-    </AuthContext>
+    <AuthContext value={{ firebaseUser, userDoc, loading, isAdmin, signInWithGoogle, logOut }}>{children}</AuthContext>
   );
 }
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
 
-import { Image, Modal } from '@mantine/core';
 import { Carousel } from '@mantine/carousel';
+import { Image, Modal } from '@mantine/core';
 
 import type { BeanImage } from '@fazole/common';
 
@@ -43,13 +43,7 @@ export function BeanImageGallery({ images }: BeanImageGalleryProps): ReactElemen
         })}
       </Carousel>
 
-      <Modal
-        opened={lightboxUrl !== null}
-        onClose={() => setLightboxUrl(null)}
-        size="xl"
-        padding={0}
-        withCloseButton
-      >
+      <Modal opened={lightboxUrl !== null} onClose={() => setLightboxUrl(null)} size="xl" padding={0} withCloseButton>
         {lightboxUrl && <Image src={lightboxUrl} fit="contain" alt="" />}
       </Modal>
     </>

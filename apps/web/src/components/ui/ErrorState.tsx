@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 
 import { Alert, Button, Stack } from '@mantine/core';
+
 import { IconAlertCircle } from '@tabler/icons-react';
 
 interface ErrorStateProps {

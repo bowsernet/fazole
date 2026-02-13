@@ -4,10 +4,10 @@ import { Link } from 'react-router';
 
 import { Button, Group, Pagination, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
-import { IconPlus } from '@tabler/icons-react';
 
 import type { Bean } from '@fazole/common';
 import { PAGINATION_PAGE_SIZE } from '@fazole/config';
+import { IconPlus } from '@tabler/icons-react';
 
 import { GrowRecordFilters, GrowRecordTable } from '../../components/grow-records';
 import type { GrowRecordFiltersState, SortState } from '../../components/grow-records';
@@ -38,7 +38,7 @@ export function GrowRecordListPage(): ReactElement {
       sortDir: sort.dir,
       page,
     }),
-    [filters, sort, page],
+    [filters, sort, page]
   );
 
   const {
@@ -64,7 +64,7 @@ export function GrowRecordListPage(): ReactElement {
 
   function handleSort(field: string): void {
     setSort((prev) =>
-      prev.field === field ? { field, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { field, dir: 'desc' },
+      prev.field === field ? { field, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { field, dir: 'desc' }
     );
     setPage(1);
   }

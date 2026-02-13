@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { Button, Group, NumberInput, Select, Stack, TextInput, Textarea } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { Controller, useForm } from 'react-hook-form';
 
 import type { Bean, Source } from '@fazole/common';
 import { BEAN_COLORS } from '@fazole/common';
@@ -222,9 +222,7 @@ export function BeanForm({ bean, sources, onSave, onCancel }: BeanFormProps): Re
         <Controller
           name="description"
           control={control}
-          render={({ field }) => (
-            <Textarea label="Description" placeholder="Your description" minRows={3} {...field} />
-          )}
+          render={({ field }) => <Textarea label="Description" placeholder="Your description" minRows={3} {...field} />}
         />
 
         <Controller

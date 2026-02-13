@@ -2,6 +2,7 @@ import type { ReactElement } from 'react';
 import { Link } from 'react-router';
 
 import { Anchor, AppShell, Burger, Group, Menu, Stack } from '@mantine/core';
+
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { useAuth } from '../../hooks/use-auth';

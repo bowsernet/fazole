@@ -1,4 +1,7 @@
+import type { GrowRecord } from '@fazole/common';
+import { PAGINATION_PAGE_SIZE } from '@fazole/config';
 import {
+  type QueryConstraint,
   addDoc,
   collection,
   doc,
@@ -12,11 +15,7 @@ import {
   startAfter,
   updateDoc,
   where,
-  type QueryConstraint,
 } from 'firebase/firestore';
-
-import type { GrowRecord } from '@fazole/common';
-import { PAGINATION_PAGE_SIZE } from '@fazole/config';
 
 import { db } from '../firebase';
 
@@ -35,7 +34,7 @@ interface FetchGrowRecordsOptions {
 }
 
 export async function fetchGrowRecords(
-  options: FetchGrowRecordsOptions = {},
+  options: FetchGrowRecordsOptions = {}
 ): Promise<{ records: GrowRecord[]; total: number }> {
   const { filters = {}, sortField = 'year', sortDir = 'desc', page = 1 } = options;
 
@@ -51,11 +50,7 @@ export async function fetchGrowRecords(
   constraints.push(limit(PAGINATION_PAGE_SIZE));
 
   if (page > 1) {
-    const skipQuery = query(
-      growRecordsRef,
-      ...constraints.slice(0, -1),
-      limit((page - 1) * PAGINATION_PAGE_SIZE),
-    );
+    const skipQuery = query(growRecordsRef, ...constraints.slice(0, -1), limit((page - 1) * PAGINATION_PAGE_SIZE));
     const skipSnap = await getDocs(skipQuery);
     const lastDoc = skipSnap.docs[skipSnap.docs.length - 1];
     if (lastDoc) constraints.push(startAfter(lastDoc));
@@ -73,9 +68,7 @@ export async function fetchGrowRecord(id: string): Promise<GrowRecord> {
   return { id: snap.id, ...snap.data() } as GrowRecord;
 }
 
-export async function createGrowRecord(
-  data: Omit<GrowRecord, 'id' | 'createdAt' | 'updatedAt'>,
-): Promise<string> {
+export async function createGrowRecord(data: Omit<GrowRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
   const docRef = await addDoc(growRecordsRef, {
     ...data,
     deletedAt: null,

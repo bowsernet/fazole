@@ -1,23 +1,12 @@
 import { useState } from 'react';
 import type { ReactElement } from 'react';
 
-import {
-  ActionIcon,
-  Checkbox,
-  Group,
-  Image,
-  NumberInput,
-  Select,
-  Stack,
-  Table,
-  Text,
-  Title,
-} from '@mantine/core';
+import { ActionIcon, Checkbox, Group, Image, NumberInput, Select, Stack, Table, Text, Title } from '@mantine/core';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
 import { notifications } from '@mantine/notifications';
-import { IconPhoto, IconTrash, IconUpload, IconX } from '@tabler/icons-react';
 
 import type { BeanImage, ImageType } from '@fazole/common';
+import { IconPhoto, IconTrash, IconUpload, IconX } from '@tabler/icons-react';
 
 import { deleteBeanImage, updateBeanImage, uploadBeanImage } from '../../lib/firestore/images';
 
@@ -96,12 +85,7 @@ export function BeanImageManager({ beanId, images, onChanged }: BeanImageManager
     <Stack gap="md">
       <Title order={3}>Images</Title>
 
-      <Dropzone
-        onDrop={handleDrop}
-        accept={IMAGE_MIME_TYPE}
-        loading={uploading}
-        maxSize={10 * 1024 * 1024}
-      >
+      <Dropzone onDrop={handleDrop} accept={IMAGE_MIME_TYPE} loading={uploading} maxSize={10 * 1024 * 1024}>
         <Group justify="center" gap="xl" mih={100} style={{ pointerEvents: 'none' }}>
           <Dropzone.Accept>
             <IconUpload size={40} stroke={1.5} />

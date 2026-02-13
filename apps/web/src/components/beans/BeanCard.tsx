@@ -17,12 +17,7 @@ export function BeanCard({ bean, images }: BeanCardProps): ReactElement {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder component={Link} to={`/beans/${bean.id}`}>
       <Card.Section>
-        <Image
-          src={previewUrl}
-          height={180}
-          alt={bean.name}
-          fallbackSrc="https://placehold.co/640x480?text=No+Image"
-        />
+        <Image src={previewUrl} height={180} alt={bean.name} fallbackSrc="https://placehold.co/640x480?text=No+Image" />
       </Card.Section>
 
       <Text fw={500} size="lg" mt="md" truncate>

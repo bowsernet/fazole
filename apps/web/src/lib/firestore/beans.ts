@@ -1,4 +1,7 @@
+import type { Bean, BeanColor, BeanSpecies, PlantType, PodType } from '@fazole/common';
+import { PAGINATION_PAGE_SIZE } from '@fazole/config';
 import {
+  type QueryConstraint,
   addDoc,
   collection,
   doc,
@@ -12,11 +15,7 @@ import {
   startAfter,
   updateDoc,
   where,
-  type QueryConstraint,
 } from 'firebase/firestore';
-
-import type { Bean, BeanColor, BeanSpecies, PlantType, PodType } from '@fazole/common';
-import { PAGINATION_PAGE_SIZE } from '@fazole/config';
 
 import { db } from '../firebase';
 
@@ -38,9 +37,7 @@ interface FetchBeansOptions {
   page?: number;
 }
 
-export async function fetchBeans(
-  options: FetchBeansOptions = {},
-): Promise<{ beans: Bean[]; total: number }> {
+export async function fetchBeans(options: FetchBeansOptions = {}): Promise<{ beans: Bean[]; total: number }> {
   const { filters = {}, sortField = 'name', sortDir = 'asc', page = 1 } = options;
 
   const constraints: QueryConstraint[] = [where('deletedAt', '==', null)];
@@ -59,11 +56,7 @@ export async function fetchBeans(
   constraints.push(limit(PAGINATION_PAGE_SIZE));
 
   if (page > 1) {
-    const skipQuery = query(
-      beansRef,
-      ...constraints.slice(0, -1),
-      limit((page - 1) * PAGINATION_PAGE_SIZE),
-    );
+    const skipQuery = query(beansRef, ...constraints.slice(0, -1), limit((page - 1) * PAGINATION_PAGE_SIZE));
     const skipSnap = await getDocs(skipQuery);
     const lastDoc = skipSnap.docs[skipSnap.docs.length - 1];
     if (lastDoc) constraints.push(startAfter(lastDoc));
@@ -86,9 +79,7 @@ export async function fetchBean(id: string): Promise<Bean> {
   return { id: snap.id, ...snap.data() } as Bean;
 }
 
-export async function createBean(
-  data: Omit<Bean, 'id' | 'createdAt' | 'updatedAt' | 'yearsGrown'>,
-): Promise<string> {
+export async function createBean(data: Omit<Bean, 'id' | 'createdAt' | 'updatedAt' | 'yearsGrown'>): Promise<string> {
   const docRef = await addDoc(beansRef, {
     ...data,
     yearsGrown: [],

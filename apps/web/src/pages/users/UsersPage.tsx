@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react';
 
 import { Alert, Title } from '@mantine/core';
+
 import { IconLock } from '@tabler/icons-react';
 
-import { UsersTable } from '../../components/users';
 import { EmptyState, ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
+import { UsersTable } from '../../components/users';
 import { useAuth, useQuery } from '../../hooks';
 import { fetchUsers } from '../../lib';
 
@@ -24,7 +25,12 @@ export function UsersPage(): ReactElement {
 
   if (loading) return <LoadingState />;
   if (error) return <ErrorState message={error.message} onRetry={refetch} />;
-  if (!users || users.length === 0) return <UsersPageShell><EmptyState message="No users found." /></UsersPageShell>;
+  if (!users || users.length === 0)
+    return (
+      <UsersPageShell>
+        <EmptyState message="No users found." />
+      </UsersPageShell>
+    );
 
   return (
     <UsersPageShell>

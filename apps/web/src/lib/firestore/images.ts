@@ -1,3 +1,4 @@
+import type { BeanImage, ImageType } from '@fazole/common';
 import {
   addDoc,
   collection,
@@ -10,8 +11,6 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { deleteObject, ref, uploadBytes } from 'firebase/storage';
-
-import type { BeanImage, ImageType } from '@fazole/common';
 
 import { db, storage } from '../firebase';
 
@@ -27,7 +26,7 @@ export async function fetchBeanImages(beanId: string): Promise<BeanImage[]> {
 export async function uploadBeanImage(
   beanId: string,
   file: File,
-  metadata: { type: ImageType; year: number; primary: boolean },
+  metadata: { type: ImageType; year: number; primary: boolean }
 ): Promise<string> {
   const ext = file.name.split('.').pop() ?? 'jpg';
   const docRef = await addDoc(imagesRef(beanId), {
@@ -52,11 +51,7 @@ export async function uploadBeanImage(
   return docRef.id;
 }
 
-export async function updateBeanImage(
-  beanId: string,
-  imageId: string,
-  data: Partial<BeanImage>,
-): Promise<void> {
+export async function updateBeanImage(beanId: string, imageId: string, data: Partial<BeanImage>): Promise<void> {
   await updateDoc(doc(db, 'beans', beanId, 'images', imageId), {
     ...data,
     updatedAt: serverTimestamp(),

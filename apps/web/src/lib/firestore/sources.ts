@@ -1,3 +1,4 @@
+import type { Source } from '@fazole/common';
 import {
   addDoc,
   collection,
@@ -10,8 +11,6 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
-
-import type { Source } from '@fazole/common';
 
 import { db, functions } from '../firebase';
 
@@ -28,9 +27,7 @@ export async function fetchSource(id: string): Promise<Source> {
   return { id: snap.id, ...snap.data() } as Source;
 }
 
-export async function createSource(
-  data: Omit<Source, 'id' | 'createdAt' | 'updatedAt'>,
-): Promise<string> {
+export async function createSource(data: Omit<Source, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
   const docRef = await addDoc(sourcesRef, {
     ...data,
     createdAt: serverTimestamp(),
@@ -41,7 +38,7 @@ export async function createSource(
 
 export async function updateSource(
   id: string,
-  data: Partial<Omit<Source, 'id' | 'createdAt' | 'updatedAt'>>,
+  data: Partial<Omit<Source, 'id' | 'createdAt' | 'updatedAt'>>
 ): Promise<void> {
   await updateDoc(doc(db, 'sources', id), {
     ...data,

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { isValidBeanColor, BEAN_COLORS } from '../../constants/bean-colors';
+
+import { BEAN_COLORS, isValidBeanColor } from '../../constants/bean-colors';
 
 describe('bean colors', () => {
   it('should contain expected colors', () => {

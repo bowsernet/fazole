@@ -2,9 +2,9 @@ import type { ReactElement } from 'react';
 
 import { ActionIcon, Collapse, Group, Select, Stack } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { IconFilter, IconFilterOff } from '@tabler/icons-react';
 
 import type { Bean } from '@fazole/common';
+import { IconFilter, IconFilterOff } from '@tabler/icons-react';
 
 export interface GrowRecordFiltersState {
   year: string | null;

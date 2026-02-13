@@ -26,7 +26,7 @@ export function GrowRecordEditPage(): ReactElement {
     useCallback(async () => {
       if (isNew) return null;
       return fetchGrowRecord(id);
-    }, [id, isNew]),
+    }, [id, isNew])
   );
 
   const { data: beans } = useQuery(useCallback(() => fetchAllBeans(), []));

@@ -1,6 +1,5 @@
-import { collection, doc, getDoc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
-
 import type { User, UserRole } from '@fazole/common';
+import { collection, doc, getDoc, getDocs, orderBy, query, updateDoc } from 'firebase/firestore';
 
 import { db } from '../firebase';
 

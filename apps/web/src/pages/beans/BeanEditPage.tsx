@@ -27,19 +27,16 @@ export function BeanEditPage(): ReactElement {
     useCallback(async () => {
       if (isNew) return null;
       return fetchBean(id);
-    }, [id, isNew]),
+    }, [id, isNew])
   );
 
   const { data: sources } = useQuery(useCallback(() => fetchSources(), []));
 
-  const {
-    data: images,
-    refetch: refetchImages,
-  } = useQuery(
+  const { data: images, refetch: refetchImages } = useQuery(
     useCallback(async () => {
       if (isNew) return [];
       return fetchBeanImages(id);
-    }, [id, isNew]),
+    }, [id, isNew])
   );
 
   if (!isNew && beanLoading) return <LoadingState />;
@@ -91,9 +88,7 @@ export function BeanEditPage(): ReactElement {
           onCancel={() => navigate(isNew ? '/beans' : `/beans/${id}`)}
         />
 
-        {!isNew && id && (
-          <BeanImageManager beanId={id} images={images ?? []} onChanged={refetchImages} />
-        )}
+        {!isNew && id && <BeanImageManager beanId={id} images={images ?? []} onChanged={refetchImages} />}
       </Stack>
     </>
   );

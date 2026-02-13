@@ -3,9 +3,9 @@ import type { ReactElement } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import { Button, Group, Stack, Title } from '@mantine/core';
-import { IconEdit, IconPlus } from '@tabler/icons-react';
 
 import type { GrowRecord } from '@fazole/common';
+import { IconEdit, IconPlus } from '@tabler/icons-react';
 
 import { BeanGrowHistory, BeanImageGallery, BeanProperties } from '../../components/beans';
 import { ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
@@ -38,17 +38,11 @@ export function BeanDetailPage(): ReactElement {
       } catch {
         return null;
       }
-    }, [bean?.sourceId]),
+    }, [bean?.sourceId])
   );
 
-  const {
-    data: growResult,
-    refetch: refetchGrow,
-  } = useQuery(
-    useCallback(
-      () => fetchGrowRecords({ filters: { beanId: id }, sortField: 'year', sortDir: 'desc' }),
-      [id],
-    ),
+  const { data: growResult, refetch: refetchGrow } = useQuery(
+    useCallback(() => fetchGrowRecords({ filters: { beanId: id }, sortField: 'year', sortDir: 'desc' }), [id])
   );
 
   if (beanLoading) return <LoadingState />;
@@ -58,11 +52,7 @@ export function BeanDetailPage(): ReactElement {
   return (
     <>
       <PageBreadcrumbs
-        items={[
-          { label: 'Home', href: '/' },
-          { label: 'Beans', href: '/beans' },
-          { label: bean.name },
-        ]}
+        items={[{ label: 'Home', href: '/' }, { label: 'Beans', href: '/beans' }, { label: bean.name }]}
       />
 
       <Stack gap="lg">

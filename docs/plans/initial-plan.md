@@ -2,11 +2,16 @@
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
-**Goal:** Build a Turborepo monorepo web app for tracking a bean collection — with Vite/React/Mantine frontend, Firebase backend (Firestore, Cloud Functions, Storage), Google Auth, and image processing.
+**Goal:** Build a Turborepo monorepo web app for tracking a bean collection — with Vite/React/Mantine frontend, Firebase
+backend (Firestore, Cloud Functions, Storage), Google Auth, and image processing.
 
-**Architecture:** Turborepo monorepo with two apps (`web`, `firebase-functions`) and two shared packages (`common`, `config`). The frontend is a Vite+React SPA using Mantine UI 8.x with React Router v7 in library mode. The backend uses Firebase v2 Cloud Functions, Firestore for data, and Firebase Storage for images with `sharp`-based optimization. Auth is Google-only via Firebase Auth.
+**Architecture:** Turborepo monorepo with two apps (`web`, `firebase-functions`) and two shared packages (`common`,
+`config`). The frontend is a Vite+React SPA using Mantine UI 8.x with React Router v7 in library mode. The backend uses
+Firebase v2 Cloud Functions, Firestore for data, and Firebase Storage for images with `sharp`-based optimization. Auth
+is Google-only via Firebase Auth.
 
-**Tech Stack:** TypeScript (strict), Vite, React, Mantine UI 8.x, React Router v7, react-hook-form, Firebase (Firestore, Cloud Functions v2, Storage, Auth), Turborepo, pnpm, sharp, Prettier with import sorting
+**Tech Stack:** TypeScript (strict), Vite, React, Mantine UI 8.x, React Router v7, react-hook-form, Firebase (Firestore,
+Cloud Functions v2, Storage, Auth), Turborepo, pnpm, sharp, Prettier with import sorting
 
 ---
 
@@ -15,6 +20,7 @@
 ### Task 1: Initialize Turborepo Monorepo
 
 **Files:**
+
 - Create: `package.json` (root)
 - Create: `turbo.json`
 - Create: `pnpm-workspace.yaml`
@@ -49,8 +55,8 @@ Create `pnpm-workspace.yaml`:
 
 ```yaml
 packages:
-  - "apps/*"
-  - "packages/*"
+  - 'apps/*'
+  - 'packages/*'
 ```
 
 **Step 2: Install Turborepo and Prettier plugin**
@@ -152,6 +158,7 @@ git commit -m "chore: initialize turborepo monorepo with pnpm workspace"
 ### Task 2: Set Up `packages/common`
 
 **Files:**
+
 - Create: `packages/common/package.json`
 - Create: `packages/common/tsconfig.json`
 - Create: `packages/common/src/index.ts`
@@ -214,6 +221,7 @@ git commit -m "chore: add packages/common skeleton"
 ### Task 3: Set Up `packages/config`
 
 **Files:**
+
 - Create: `packages/config/package.json`
 - Create: `packages/config/tsconfig.json`
 - Create: `packages/config/src/index.ts`
@@ -286,6 +294,7 @@ git commit -m "chore: add packages/config with image presets and constants"
 ### Task 4: Set Up `apps/web` (Vite + React + Mantine)
 
 **Files:**
+
 - Create: `apps/web/` (Vite scaffold)
 - Create: `apps/web/tsconfig.json`
 - Create: `apps/web/vite.config.ts`
@@ -360,13 +369,12 @@ Replace `apps/web/src/main.tsx`:
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
-import { MantineProvider } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
-
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
 import '@mantine/carousel/styles.css';
+import { MantineProvider } from '@mantine/core';
+import '@mantine/core/styles.css';
 import '@mantine/dropzone/styles.css';
+import { Notifications } from '@mantine/notifications';
+import '@mantine/notifications/styles.css';
 
 import { App } from './App';
 
@@ -384,7 +392,6 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
 
 ```tsx
 import { ReactElement } from 'react';
-
 import { BrowserRouter, Route, Routes } from 'react-router';
 
 export function App(): ReactElement {
@@ -424,6 +431,7 @@ git commit -m "chore: scaffold web app with Vite, React, Mantine 8.x, React Rout
 ### Task 5: Set Up `apps/firebase-functions`
 
 **Files:**
+
 - Create: `apps/firebase-functions/package.json`
 - Create: `apps/firebase-functions/tsconfig.json`
 - Create: `apps/firebase-functions/src/index.ts`
@@ -499,6 +507,7 @@ git commit -m "chore: scaffold firebase-functions app"
 ### Task 6: Firebase Project Configuration & Emulator
 
 **Files:**
+
 - Create: `firebase.json`
 - Create: `.firebaserc`
 - Create: `firestore.rules`
@@ -645,6 +654,7 @@ git commit -m "chore: add Firebase config, security rules, and emulator setup"
 ### Task 7: Install Vitest for Testing
 
 **Files:**
+
 - Create: `packages/common/vitest.config.ts`
 - Modify: `packages/common/package.json`
 
@@ -688,6 +698,7 @@ git commit -m "chore: add vitest to packages/common"
 ### Task 8: Define Entity Types in `packages/common`
 
 **Files:**
+
 - Create: `packages/common/src/types/index.ts`
 - Create: `packages/common/src/types/user.ts`
 - Create: `packages/common/src/types/bean.ts`
@@ -828,6 +839,7 @@ git commit -m "feat: add entity types for users, beans, grow records, sources, i
 ### Task 9: Add Bean Color Constants & Validation Helpers
 
 **Files:**
+
 - Create: `packages/common/src/constants/index.ts`
 - Create: `packages/common/src/constants/bean-colors.ts`
 - Create: `packages/common/src/validation/index.ts`
@@ -841,7 +853,7 @@ git commit -m "feat: add entity types for users, beans, grow records, sources, i
 // packages/common/src/__tests__/validation/bean.test.ts
 import { describe, expect, it } from 'vitest';
 
-import { isValidBeanColor, BEAN_COLORS } from '../../constants/bean-colors';
+import { BEAN_COLORS, isValidBeanColor } from '../../constants/bean-colors';
 
 describe('bean colors', () => {
   it('should contain expected colors', () => {
@@ -877,7 +889,13 @@ Expected: FAIL — module not found.
 import type { BeanColor } from '../types/bean';
 
 export const BEAN_COLORS: readonly BeanColor[] = [
-  'white', 'yellow', 'brown', 'pink', 'red', 'purple', 'black',
+  'white',
+  'yellow',
+  'brown',
+  'pink',
+  'red',
+  'purple',
+  'black',
 ] as const;
 
 export function isValidBeanColor(value: string): value is BeanColor {
@@ -920,6 +938,7 @@ git commit -m "feat: add bean color constants and validation"
 ### Task 10: `beforeUserCreated` Auth Function
 
 **Files:**
+
 - Create: `apps/firebase-functions/src/auth/before-user-created.ts`
 - Modify: `apps/firebase-functions/src/index.ts`
 
@@ -929,25 +948,25 @@ Use context7 MCP for Firebase Functions v2 `beforeUserCreated` blocking function
 
 ```ts
 // apps/firebase-functions/src/auth/before-user-created.ts
-import { beforeUserCreated } from 'firebase-functions/v2/identity';
-import { getFirestore } from 'firebase-admin/firestore';
 import { FIREBASE_REGION } from '@fazole/config';
+import { getFirestore } from 'firebase-admin/firestore';
+import { beforeUserCreated } from 'firebase-functions/v2/identity';
 
-export const onBeforeUserCreated = beforeUserCreated(
-  { region: FIREBASE_REGION },
-  async (event) => {
-    const db = getFirestore();
-    const usersSnapshot = await db.collection('users').limit(1).get();
-    const isFirstUser = usersSnapshot.empty;
+export const onBeforeUserCreated = beforeUserCreated({ region: FIREBASE_REGION }, async (event) => {
+  const db = getFirestore();
+  const usersSnapshot = await db.collection('users').limit(1).get();
+  const isFirstUser = usersSnapshot.empty;
 
-    await db.collection('users').doc(event.data.uid).set({
+  await db
+    .collection('users')
+    .doc(event.data.uid)
+    .set({
       role: isFirstUser ? 'admin' : 'user',
       displayName: event.data.displayName || '',
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
-  }
-);
+});
 ```
 
 **Step 2: Initialize firebase-admin and export from index.ts**
@@ -979,6 +998,7 @@ git commit -m "feat: add beforeUserCreated function (first user = admin)"
 ### Task 11: `onGrowRecordWrite` Trigger — Update Bean `yearsGrown`
 
 **Files:**
+
 - Create: `apps/firebase-functions/src/triggers/grow-record-write.ts`
 - Modify: `apps/firebase-functions/src/index.ts`
 
@@ -988,9 +1008,9 @@ Use context7 MCP for Firestore v2 `onDocumentWritten` trigger.
 
 ```ts
 // apps/firebase-functions/src/triggers/grow-record-write.ts
-import { onDocumentWritten } from 'firebase-functions/v2/firestore';
-import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { FIREBASE_REGION } from '@fazole/config';
+import { FieldValue, getFirestore } from 'firebase-admin/firestore';
+import { onDocumentWritten } from 'firebase-functions/v2/firestore';
 
 export const onGrowRecordWrite = onDocumentWritten(
   { document: 'growRecords/{recordId}', region: FIREBASE_REGION },
@@ -1048,6 +1068,7 @@ git commit -m "feat: add onGrowRecordWrite trigger to update bean yearsGrown"
 ### Task 12: Image Processing Cloud Function
 
 **Files:**
+
 - Create: `apps/firebase-functions/src/storage/on-image-upload.ts`
 - Modify: `apps/firebase-functions/src/index.ts`
 
@@ -1055,68 +1076,66 @@ Use context7 MCP for Firebase Storage `onObjectFinalized` trigger and sharp usag
 
 **Step 1: Implement image processing function**
 
-This function triggers on Storage upload, generates optimized variants (WebP + AVIF for each preset), saves them back to Storage, and updates the Firestore image document with paths and URLs.
+This function triggers on Storage upload, generates optimized variants (WebP + AVIF for each preset), saves them back to
+Storage, and updates the Firestore image document with paths and URLs.
 
 ```ts
 // apps/firebase-functions/src/storage/on-image-upload.ts
-import { onObjectFinalized } from 'firebase-functions/v2/storage';
-import { getStorage } from 'firebase-admin/storage';
+import { FIREBASE_REGION, IMAGE_FORMATS, IMAGE_PRESETS } from '@fazole/config';
+import type { ImageFormat, ImagePresetKey } from '@fazole/config';
 import { getFirestore } from 'firebase-admin/firestore';
+import { getStorage } from 'firebase-admin/storage';
+import { onObjectFinalized } from 'firebase-functions/v2/storage';
 import sharp from 'sharp';
-import { FIREBASE_REGION, IMAGE_PRESETS, IMAGE_FORMATS } from '@fazole/config';
-import type { ImagePresetKey, ImageFormat } from '@fazole/config';
 
-export const onImageUpload = onObjectFinalized(
-  { region: FIREBASE_REGION },
-  async (event) => {
-    const filePath = event.data.name;
-    if (!filePath) return;
+export const onImageUpload = onObjectFinalized({ region: FIREBASE_REGION }, async (event) => {
+  const filePath = event.data.name;
+  if (!filePath) return;
 
-    // Only process originals: beans/{beanId}/images/{imageId}.{ext}
-    const match = filePath.match(/^beans\/([^/]+)\/images\/([^/]+)\.(\w+)$/);
-    if (!match) return;
+  // Only process originals: beans/{beanId}/images/{imageId}.{ext}
+  const match = filePath.match(/^beans\/([^/]+)\/images\/([^/]+)\.(\w+)$/);
+  if (!match) return;
 
-    const [, beanId, imageId] = match;
-    const bucket = getStorage().bucket(event.data.bucket);
-    const db = getFirestore();
+  const [, beanId, imageId] = match;
+  const bucket = getStorage().bucket(event.data.bucket);
+  const db = getFirestore();
 
-    // Download original
-    const [buffer] = await bucket.file(filePath).download();
+  // Download original
+  const [buffer] = await bucket.file(filePath).download();
 
-    const paths: Record<string, string> = {};
-    const urls: Record<string, string> = {};
+  const paths: Record<string, string> = {};
+  const urls: Record<string, string> = {};
 
-    // Generate variants
-    for (const [presetName, preset] of Object.entries(IMAGE_PRESETS)) {
-      for (const format of IMAGE_FORMATS) {
-        const key = `${presetName}_${format}` as `${ImagePresetKey}_${ImageFormat}`;
-        const outputPath = `beans/${beanId}/images/${imageId}_${presetName}.${format}`;
+  // Generate variants
+  for (const [presetName, preset] of Object.entries(IMAGE_PRESETS)) {
+    for (const format of IMAGE_FORMATS) {
+      const key = `${presetName}_${format}` as `${ImagePresetKey}_${ImageFormat}`;
+      const outputPath = `beans/${beanId}/images/${imageId}_${presetName}.${format}`;
 
-        const processed = await sharp(buffer)
-          .resize(preset.width, preset.height, { fit: preset.fit })
-          .toFormat(format)
-          .toBuffer();
+      const processed = await sharp(buffer)
+        .resize(preset.width, preset.height, { fit: preset.fit })
+        .toFormat(format)
+        .toBuffer();
 
-        const file = bucket.file(outputPath);
-        await file.save(processed, {
-          metadata: { contentType: `image/${format}` },
-        });
-        await file.makePublic();
+      const file = bucket.file(outputPath);
+      await file.save(processed, {
+        metadata: { contentType: `image/${format}` },
+      });
+      await file.makePublic();
 
-        paths[key] = outputPath;
-        urls[key] = file.publicUrl();
-      }
+      paths[key] = outputPath;
+      urls[key] = file.publicUrl();
     }
-
-    // Update Firestore image document
-    await db
-      .collection('beans')
-      .doc(beanId)
-      .collection('images')
-      .doc(imageId)
-      .update({ paths, urls, updatedAt: Date.now() });
   }
-);
+
+  // Update Firestore image document
+  await db
+    .collection('beans')
+    .doc(beanId)
+    .collection('images')
+    .doc(imageId)
+    .update({ paths, urls, updatedAt: Date.now() });
+});
 ```
 
 **Step 2: Export from index.ts**
@@ -1143,6 +1162,7 @@ git commit -m "feat: add image processing function (sharp variants on upload)"
 ### Task 13: Referential Integrity Cloud Function
 
 **Files:**
+
 - Create: `apps/firebase-functions/src/triggers/referential-integrity.ts`
 - Modify: `apps/firebase-functions/src/index.ts`
 
@@ -1152,63 +1172,42 @@ Prevent deletion of documents that other documents depend on (e.g., sources with
 
 ```ts
 // apps/firebase-functions/src/triggers/referential-integrity.ts
-import { onDocumentDeleted } from 'firebase-functions/v2/firestore';
-import { getFirestore } from 'firebase-admin/firestore';
 import { FIREBASE_REGION } from '@fazole/config';
+import { getFirestore } from 'firebase-admin/firestore';
+import { onDocumentDeleted } from 'firebase-functions/v2/firestore';
 import { HttpsError } from 'firebase-functions/v2/https';
-
 // Instead of blocking deletes (which Firestore triggers can't do),
 // use a callable function for safe deletion
 import { onCall } from 'firebase-functions/v2/https';
 
-export const deleteSource = onCall(
-  { region: FIREBASE_REGION },
-  async (request) => {
-    const db = getFirestore();
-    const { sourceId } = request.data;
+export const deleteSource = onCall({ region: FIREBASE_REGION }, async (request) => {
+  const db = getFirestore();
+  const { sourceId } = request.data;
 
-    // Check for beans referencing this source
-    const beansSnap = await db
-      .collection('beans')
-      .where('sourceId', '==', sourceId)
-      .limit(1)
-      .get();
+  // Check for beans referencing this source
+  const beansSnap = await db.collection('beans').where('sourceId', '==', sourceId).limit(1).get();
 
-    if (!beansSnap.empty) {
-      throw new HttpsError(
-        'failed-precondition',
-        'Cannot delete source: beans reference this source'
-      );
-    }
-
-    await db.collection('sources').doc(sourceId).delete();
-    return { success: true };
+  if (!beansSnap.empty) {
+    throw new HttpsError('failed-precondition', 'Cannot delete source: beans reference this source');
   }
-);
 
-export const deleteBeanHard = onCall(
-  { region: FIREBASE_REGION },
-  async (request) => {
-    const db = getFirestore();
-    const { beanId } = request.data;
+  await db.collection('sources').doc(sourceId).delete();
+  return { success: true };
+});
 
-    const recordsSnap = await db
-      .collection('growRecords')
-      .where('beanId', '==', beanId)
-      .limit(1)
-      .get();
+export const deleteBeanHard = onCall({ region: FIREBASE_REGION }, async (request) => {
+  const db = getFirestore();
+  const { beanId } = request.data;
 
-    if (!recordsSnap.empty) {
-      throw new HttpsError(
-        'failed-precondition',
-        'Cannot hard-delete bean: grow records reference this bean'
-      );
-    }
+  const recordsSnap = await db.collection('growRecords').where('beanId', '==', beanId).limit(1).get();
 
-    await db.collection('beans').doc(beanId).delete();
-    return { success: true };
+  if (!recordsSnap.empty) {
+    throw new HttpsError('failed-precondition', 'Cannot hard-delete bean: grow records reference this bean');
   }
-);
+
+  await db.collection('beans').doc(beanId).delete();
+  return { success: true };
+});
 ```
 
 **Step 2: Export from index.ts**
@@ -1237,6 +1236,7 @@ git commit -m "feat: add callable functions for safe deletion with referential i
 ### Task 14: Firebase Client SDK Setup
 
 **Files:**
+
 - Create: `apps/web/src/lib/firebase.ts`
 - Create: `apps/web/.env.example`
 
@@ -1263,12 +1263,12 @@ VITE_USE_EMULATORS=false
 **Step 3: Create lib/firebase.ts**
 
 ```ts
-import { initializeApp } from 'firebase/app';
-import { getAuth, connectAuthEmulator, browserLocalPersistence, setPersistence } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
-import { getStorage, connectStorageEmulator } from 'firebase/storage';
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { FIREBASE_REGION } from '@fazole/config';
+import { initializeApp } from 'firebase/app';
+import { browserLocalPersistence, connectAuthEmulator, getAuth, setPersistence } from 'firebase/auth';
+import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
+import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
+import { connectStorageEmulator, getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -1308,6 +1308,7 @@ git commit -m "feat: add Firebase client SDK initialization with emulator suppor
 ### Task 15: Auth Context & Hook
 
 **Files:**
+
 - Create: `apps/web/src/hooks/use-auth.ts`
 - Create: `apps/web/src/hooks/index.ts`
 - Create: `apps/web/src/types/auth.ts`
@@ -1317,12 +1318,17 @@ git commit -m "feat: add Firebase client SDK initialization with emulator suppor
 
 ```tsx
 // apps/web/src/hooks/use-auth.ts
-import { createContext, useContext, useEffect, useState, type ReactNode, type ReactElement } from 'react';
-
-import { onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider, type User as FirebaseUser } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { type ReactElement, type ReactNode, createContext, useContext, useEffect, useState } from 'react';
 
 import type { User, UserRole } from '@fazole/common';
+import {
+  type User as FirebaseUser,
+  GoogleAuthProvider,
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+} from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 
 import { auth, db } from '../lib/firebase';
 
@@ -1371,9 +1377,7 @@ export function AuthProvider({ children }: AuthProviderProps): ReactElement {
   const isAdmin = userDoc?.role === 'admin';
 
   return (
-    <AuthContext value={{ firebaseUser, userDoc, loading, isAdmin, signInWithGoogle, logOut }}>
-      {children}
-    </AuthContext>
+    <AuthContext value={{ firebaseUser, userDoc, loading, isAdmin, signInWithGoogle, logOut }}>{children}</AuthContext>
   );
 }
 
@@ -1405,6 +1409,7 @@ git commit -m "feat: add auth context, provider, and useAuth hook"
 ### Task 16: App Layout (Navbar, Footer, Content Area)
 
 **Files:**
+
 - Create: `apps/web/src/components/layout/AppLayout.tsx`
 - Create: `apps/web/src/components/layout/AppNavbar.tsx`
 - Create: `apps/web/src/components/layout/AppFooter.tsx`
@@ -1418,6 +1423,7 @@ Use context7 MCP for Mantine 8.x AppShell component and responsive layout.
 **Step 1: Create AppNavbar**
 
 Navbar with:
+
 - Left: App name "Fazole"
 - Right: inline menu (Beans, Seasons, Grow Records) + Admin submenu (Sources, Users) visible to admins + UserMenu
 
@@ -1458,6 +1464,7 @@ git commit -m "feat: add app layout with navbar, footer, and user menu"
 ### Task 17: Routing Setup
 
 **Files:**
+
 - Create: `apps/web/src/pages/HomePage.tsx`
 - Create: `apps/web/src/pages/beans/BeanListPage.tsx`
 - Create: `apps/web/src/pages/beans/BeanDetailPage.tsx`
@@ -1532,6 +1539,7 @@ git commit -m "feat: add routing with stub pages for all routes"
 ### Task 18: Shared UI Components (Loading, Error, Empty States)
 
 **Files:**
+
 - Create: `apps/web/src/components/ui/LoadingState.tsx`
 - Create: `apps/web/src/components/ui/ErrorState.tsx`
 - Create: `apps/web/src/components/ui/EmptyState.tsx`
@@ -1566,6 +1574,7 @@ git commit -m "feat: add shared UI components (loading, error, empty states, bre
 ### Task 19: Firestore Data Access Layer
 
 **Files:**
+
 - Create: `apps/web/src/lib/firestore/sources.ts`
 - Create: `apps/web/src/lib/firestore/beans.ts`
 - Create: `apps/web/src/lib/firestore/grow-records.ts`
@@ -1577,6 +1586,7 @@ git commit -m "feat: add shared UI components (loading, error, empty states, bre
 **Step 1: Create sources.ts**
 
 CRUD functions for sources collection:
+
 - `fetchSources(): Promise<Source[]>`
 - `fetchSource(id: string): Promise<Source>`
 - `createSource(data: Omit<Source, 'id' | 'createdAt' | 'updatedAt'>): Promise<string>`
@@ -1586,6 +1596,7 @@ CRUD functions for sources collection:
 **Step 2: Create beans.ts**
 
 CRUD + query functions for beans:
+
 - `fetchBeans(filters?, sort?, page?): Promise<{ beans: Bean[], total: number }>`
 - `fetchBean(id: string): Promise<Bean>`
 - `createBean(data): Promise<string>`
@@ -1624,6 +1635,7 @@ git commit -m "feat: add Firestore data access layer for all entities"
 ### Task 20: Data Fetching Hook
 
 **Files:**
+
 - Create: `apps/web/src/hooks/use-query.ts`
 - Create: `apps/web/src/__tests__/hooks/use-query.test.ts`
 - Modify: `apps/web/src/hooks/index.ts`
@@ -1634,6 +1646,7 @@ A simple data-fetching hook that handles loading/error/data states.
 
 ```ts
 import { describe, expect, it, vi } from 'vitest';
+
 import { renderHook, waitFor } from '@testing-library/react';
 
 import { useQuery } from '../../hooks/use-query';
@@ -1718,7 +1731,9 @@ export function useQuery<T>(fetcher: () => Promise<T>, deps: unknown[] = []): Qu
         }
       });
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [trigger, ...deps]);
 
   return { data, loading, error, refetch };
@@ -1741,6 +1756,7 @@ git commit -m "feat: add useQuery data fetching hook with tests"
 ### Task 21: Sources Page — List & Modal CRUD
 
 **Files:**
+
 - Create: `apps/web/src/pages/sources/SourcesPage.tsx` (replace stub)
 - Create: `apps/web/src/components/sources/SourceTable.tsx`
 - Create: `apps/web/src/components/sources/SourceForm.tsx`
@@ -1750,11 +1766,13 @@ Use context7 for Mantine `Modal`, `Table`, react-hook-form integration.
 
 **Step 1: Create SourceForm**
 
-A react-hook-form form inside a Mantine `Modal`. Fields: name, color (color picker from Mantine palette), link, description. Handles create and edit modes.
+A react-hook-form form inside a Mantine `Modal`. Fields: name, color (color picker from Mantine palette), link,
+description. Handles create and edit modes.
 
 **Step 2: Create SourceTable**
 
-Mantine `Table` showing all sources with columns: name (colored badge), link, description, actions (edit/delete). Delete calls the `deleteSource` callable function.
+Mantine `Table` showing all sources with columns: name (colored badge), link, description, actions (edit/delete). Delete
+calls the `deleteSource` callable function.
 
 **Step 3: Assemble SourcesPage**
 
@@ -1784,6 +1802,7 @@ git commit -m "feat: add sources page with modal CRUD"
 ### Task 22: Bean List Page — Card & Table Views
 
 **Files:**
+
 - Create: `apps/web/src/pages/beans/BeanListPage.tsx` (replace stub)
 - Create: `apps/web/src/components/beans/BeanCard.tsx`
 - Create: `apps/web/src/components/beans/BeanTable.tsx`
@@ -1798,11 +1817,13 @@ Card component with: image (placeholder if none), name, pills (species, podType,
 
 **Step 2: Create BeanTable**
 
-Table with columns: image thumb, name, pod type, plant type, bean size, bean colors (combined), last year grown. Sortable headers.
+Table with columns: image thumb, name, pod type, plant type, bean size, bean colors (combined), last year grown.
+Sortable headers.
 
 **Step 3: Create BeanFilters**
 
 Responsive filter component:
+
 - Species select
 - Pod type select
 - Plant type select
@@ -1836,6 +1857,7 @@ git commit -m "feat: add bean list page with card/table views and filters"
 ### Task 23: Bean Detail Page
 
 **Files:**
+
 - Create: `apps/web/src/pages/beans/BeanDetailPage.tsx` (replace stub)
 - Create: `apps/web/src/components/beans/BeanImageGallery.tsx`
 - Create: `apps/web/src/components/beans/BeanProperties.tsx`
@@ -1852,12 +1874,14 @@ Use context7 for Mantine `Carousel` (from @mantine/carousel) and layout componen
 **Step 2: Create BeanProperties**
 
 Display all bean properties as stats/pills with Tabler icons:
+
 - Species, pod type, plant type, bean size, weight, colors
 - Description with source fallback (different background + source name badge)
 
 **Step 3: Create BeanGrowHistory**
 
-Table of grow records for this bean. Columns: year, all date fields. Edit/delete buttons for admins. No pagination needed.
+Table of grow records for this bean. Columns: year, all date fields. Edit/delete buttons for admins. No pagination
+needed.
 
 **Step 4: Assemble BeanDetailPage**
 
@@ -1883,6 +1907,7 @@ git commit -m "feat: add bean detail page with gallery, properties, grow history
 ### Task 24: Bean Edit Page (Form + Image Management)
 
 **Files:**
+
 - Create: `apps/web/src/pages/beans/BeanEditPage.tsx` (replace stub)
 - Create: `apps/web/src/components/beans/BeanForm.tsx`
 - Create: `apps/web/src/components/beans/BeanImageManager.tsx`
@@ -1892,6 +1917,7 @@ Use context7 for react-hook-form with Mantine, @mantine/dropzone.
 **Step 1: Create BeanForm**
 
 Full-page react-hook-form form with all bean fields:
+
 - name (TextInput)
 - species (Select)
 - podType (Select)
@@ -1907,6 +1933,7 @@ Three buttons: Cancel, Save & Go Back, Save & Stay.
 **Step 2: Create BeanImageManager**
 
 Inside the bean edit form:
+
 - Dropzone for uploading new images (accepts jpeg, png, webp, avif)
 - Table of existing images with: thumbnail, type (select), year (number), primary (checkbox)
 - Drag & drop reordering
@@ -1940,6 +1967,7 @@ git commit -m "feat: add bean edit page with form and image management"
 ### Task 25: Grow Record List Page
 
 **Files:**
+
 - Create: `apps/web/src/pages/grow-records/GrowRecordListPage.tsx` (replace stub)
 - Create: `apps/web/src/components/grow-records/GrowRecordTable.tsx`
 - Create: `apps/web/src/components/grow-records/GrowRecordFilters.tsx`
@@ -1975,12 +2003,14 @@ git commit -m "feat: add grow record list page with filters and table"
 ### Task 26: Grow Record Edit Page
 
 **Files:**
+
 - Create: `apps/web/src/pages/grow-records/GrowRecordEditPage.tsx` (replace stub)
 - Create: `apps/web/src/components/grow-records/GrowRecordForm.tsx`
 
 **Step 1: Create GrowRecordForm**
 
 Full-page react-hook-form form:
+
 - beanId (Select, populated from beans. Pre-filled if `?beanId=xxx` query param)
 - year (NumberInput)
 - preplantDate, plantDate, sproutDate, flowerDate, harvestStartDate, harvestEndDate (DateInput from Mantine)
@@ -2009,6 +2039,7 @@ git commit -m "feat: add grow record edit page"
 ### Task 27: Seasons Page
 
 **Files:**
+
 - Create: `apps/web/src/pages/seasons/SeasonsPage.tsx` (replace stub)
 - Create: `apps/web/src/components/seasons/SeasonsTable.tsx`
 - Create: `apps/web/src/components/seasons/InlineBeanCard.tsx`
@@ -2020,6 +2051,7 @@ Tiny inline card: small image + bean name, links to bean detail.
 **Step 2: Create SeasonsTable**
 
 Table with columns:
+
 - Year (link — currently just anchor, no separate season detail page)
 - Number of beans grown
 - List of beans as InlineBeanCards
@@ -2045,6 +2077,7 @@ git commit -m "feat: add seasons overview page"
 ### Task 28: Homepage
 
 **Files:**
+
 - Create: `apps/web/src/pages/HomePage.tsx` (replace stub)
 
 **Step 1: Implement HomePage**
@@ -2072,6 +2105,7 @@ git commit -m "feat: add homepage with current season bean display"
 ### Task 29: Users Page
 
 **Files:**
+
 - Create: `apps/web/src/pages/users/UsersPage.tsx` (replace stub)
 - Create: `apps/web/src/components/users/UsersTable.tsx`
 
@@ -2100,6 +2134,7 @@ git commit -m "feat: add users management page"
 ### Task 30: Responsive Layout Polish
 
 **Files:**
+
 - Modify: `apps/web/src/components/layout/AppLayout.module.css`
 - Modify: various component files as needed
 
@@ -2125,6 +2160,7 @@ git commit -m "fix: polish responsive layout across all pages"
 ### Task 31: Error Handling & Edge Cases
 
 **Files:**
+
 - Various files across the frontend
 
 **Step 1: Add 404 route**

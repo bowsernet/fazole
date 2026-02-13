@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, type ReactElement } from 'react';
+import { type ReactElement, useCallback, useMemo, useState } from 'react';
 
 import { Select, SimpleGrid, Title } from '@mantine/core';
 
@@ -58,7 +58,9 @@ export function HomePage(): ReactElement {
 
       {loading && <LoadingState />}
       {error && <ErrorState message={error.message} onRetry={refetch} />}
-      {!loading && !error && (!data || data.records.length === 0) && <EmptyState message="No beans grown this season." />}
+      {!loading && !error && (!data || data.records.length === 0) && (
+        <EmptyState message="No beans grown this season." />
+      )}
 
       {!loading && !error && data && data.records.length > 0 && (
         <SimpleGrid cols={{ base: 1, xs: 2, sm: 3, md: 4 }} spacing="lg">

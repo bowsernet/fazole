@@ -68,11 +68,13 @@ export function BeanProperties({ bean, source }: BeanPropertiesProps): ReactElem
           <Text size="sm" fw={500}>
             Years grown:
           </Text>
-          {[...bean.yearsGrown].sort((a, b) => b - a).map((year) => (
-            <Badge key={year} variant="outline" size="sm">
-              {year}
-            </Badge>
-          ))}
+          {[...bean.yearsGrown]
+            .sort((a, b) => b - a)
+            .map((year) => (
+              <Badge key={year} variant="outline" size="sm">
+                {year}
+              </Badge>
+            ))}
         </Group>
       )}
 

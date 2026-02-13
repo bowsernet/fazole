@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 
-import { Button, Menu, UnstyledButton, Text } from '@mantine/core';
+import { Button, Menu, Text, UnstyledButton } from '@mantine/core';
+
 import { IconLogout, IconUser } from '@tabler/icons-react';
 
 import { useAuth } from '../../hooks/use-auth';

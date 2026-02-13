@@ -75,6 +75,11 @@ export async function fetchBeans(
   return { beans, total };
 }
 
+export async function fetchAllBeans(): Promise<Bean[]> {
+  const snap = await getDocs(query(beansRef, where('deletedAt', '==', null), orderBy('name')));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as Bean);
+}
+
 export async function fetchBean(id: string): Promise<Bean> {
   const snap = await getDoc(doc(db, 'beans', id));
   if (!snap.exists()) throw new Error(`Bean ${id} not found`);

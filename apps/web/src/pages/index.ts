@@ -7,3 +7,4 @@ export { GrowRecordEditPage } from './grow-records/GrowRecordEditPage';
 export { SeasonsPage } from './seasons/SeasonsPage';
 export { SourcesPage } from './sources/SourcesPage';
 export { UsersPage } from './users/UsersPage';
+export { NotFoundPage } from './NotFoundPage';

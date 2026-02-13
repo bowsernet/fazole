@@ -21,34 +21,36 @@ export function SeasonsTable({ records, beansMap, imagesMap }: SeasonsTableProps
   const rows = buildSeasonRows(records);
 
   return (
-    <Table striped highlightOnHover>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Year</Table.Th>
-          <Table.Th>Beans grown</Table.Th>
-          <Table.Th>Beans</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {rows.map((row) => (
-          <Table.Tr key={row.year}>
-            <Table.Td>
-              <Text fw={600}>{row.year}</Text>
-            </Table.Td>
-            <Table.Td>{row.beanIds.length}</Table.Td>
-            <Table.Td>
-              <Group gap="md" wrap="wrap">
-                {row.beanIds.map((beanId) => {
-                  const bean = beansMap.get(beanId);
-                  if (!bean) return null;
-                  return <InlineBeanCard key={beanId} bean={bean} images={imagesMap.get(beanId) ?? []} />;
-                })}
-              </Group>
-            </Table.Td>
+    <Table.ScrollContainer minWidth={500}>
+      <Table striped highlightOnHover>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Year</Table.Th>
+            <Table.Th>Beans grown</Table.Th>
+            <Table.Th>Beans</Table.Th>
           </Table.Tr>
-        ))}
-      </Table.Tbody>
-    </Table>
+        </Table.Thead>
+        <Table.Tbody>
+          {rows.map((row) => (
+            <Table.Tr key={row.year}>
+              <Table.Td>
+                <Text fw={600}>{row.year}</Text>
+              </Table.Td>
+              <Table.Td>{row.beanIds.length}</Table.Td>
+              <Table.Td>
+                <Group gap="md" wrap="wrap">
+                  {row.beanIds.map((beanId) => {
+                    const bean = beansMap.get(beanId);
+                    if (!bean) return null;
+                    return <InlineBeanCard key={beanId} bean={bean} images={imagesMap.get(beanId) ?? []} />;
+                  })}
+                </Group>
+              </Table.Td>
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }
 

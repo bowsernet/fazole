@@ -1,4 +1,4 @@
-import { useState, type ReactElement } from 'react';
+import { type ReactElement, useState } from 'react';
 
 import { Badge, Select, Table, Text } from '@mantine/core';
 
@@ -24,20 +24,22 @@ const ROLE_COLORS: Record<UserRole, string> = {
 
 export function UsersTable({ users, isAdmin, onUserUpdated }: UsersTableProps): ReactElement {
   return (
-    <Table striped highlightOnHover>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Display name</Table.Th>
-          <Table.Th>Role</Table.Th>
-          <Table.Th>Created at</Table.Th>
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {users.map((user) => (
-          <UsersTableRow key={user.id} user={user} isAdmin={isAdmin} onUserUpdated={onUserUpdated} />
-        ))}
-      </Table.Tbody>
-    </Table>
+    <Table.ScrollContainer minWidth={400}>
+      <Table striped highlightOnHover>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Display name</Table.Th>
+            <Table.Th>Role</Table.Th>
+            <Table.Th>Created at</Table.Th>
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {users.map((user) => (
+            <UsersTableRow key={user.id} user={user} isAdmin={isAdmin} onUserUpdated={onUserUpdated} />
+          ))}
+        </Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }
 

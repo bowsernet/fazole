@@ -3,9 +3,9 @@ import type { ReactElement } from 'react';
 
 import { ActionIcon, Anchor, Badge, Group, Table } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 import type { Source } from '@fazole/common';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 import { callDeleteSource } from '../../lib/firestore/sources';
 
@@ -37,49 +37,51 @@ export function SourceTable({ sources, isAdmin, onEdit, onDeleted }: SourceTable
   }
 
   return (
-    <Table striped highlightOnHover>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Link</Table.Th>
-          <Table.Th>Description</Table.Th>
-          {isAdmin && <Table.Th>Actions</Table.Th>}
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {sources.map((source) => (
-          <Table.Tr key={source.id}>
-            <Table.Td>
-              <Badge color={source.color} variant="light">
-                {source.name}
-              </Badge>
-            </Table.Td>
-            <Table.Td>
-              <Anchor href={source.link} target="_blank" rel="noopener noreferrer" size="sm">
-                {source.link}
-              </Anchor>
-            </Table.Td>
-            <Table.Td>{source.description}</Table.Td>
-            {isAdmin && (
-              <Table.Td>
-                <Group gap="xs">
-                  <ActionIcon variant="subtle" color="blue" onClick={() => onEdit(source)}>
-                    <IconEdit size={16} />
-                  </ActionIcon>
-                  <ActionIcon
-                    variant="subtle"
-                    color="red"
-                    loading={deletingId === source.id}
-                    onClick={() => handleDelete(source)}
-                  >
-                    <IconTrash size={16} />
-                  </ActionIcon>
-                </Group>
-              </Table.Td>
-            )}
+    <Table.ScrollContainer minWidth={500}>
+      <Table striped highlightOnHover>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Name</Table.Th>
+            <Table.Th>Link</Table.Th>
+            <Table.Th>Description</Table.Th>
+            {isAdmin && <Table.Th>Actions</Table.Th>}
           </Table.Tr>
-        ))}
-      </Table.Tbody>
-    </Table>
+        </Table.Thead>
+        <Table.Tbody>
+          {sources.map((source) => (
+            <Table.Tr key={source.id}>
+              <Table.Td>
+                <Badge color={source.color} variant="light">
+                  {source.name}
+                </Badge>
+              </Table.Td>
+              <Table.Td>
+                <Anchor href={source.link} target="_blank" rel="noopener noreferrer" size="sm">
+                  {source.link}
+                </Anchor>
+              </Table.Td>
+              <Table.Td>{source.description}</Table.Td>
+              {isAdmin && (
+                <Table.Td>
+                  <Group gap="xs">
+                    <ActionIcon variant="subtle" color="blue" onClick={() => onEdit(source)}>
+                      <IconEdit size={16} />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="subtle"
+                      color="red"
+                      loading={deletingId === source.id}
+                      onClick={() => handleDelete(source)}
+                    >
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  </Group>
+                </Table.Td>
+              )}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }

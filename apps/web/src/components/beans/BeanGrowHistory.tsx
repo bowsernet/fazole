@@ -3,9 +3,9 @@ import type { ReactElement } from 'react';
 
 import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 import type { GrowRecord } from '@fazole/common';
+import { IconEdit, IconTrash } from '@tabler/icons-react';
 
 import { restoreGrowRecord, softDeleteGrowRecord } from '../../lib/firestore/grow-records';
 
@@ -57,50 +57,52 @@ export function BeanGrowHistory({ records, isAdmin, onEdit, onDeleted }: BeanGro
   }
 
   return (
-    <Table striped>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Year</Table.Th>
-          <Table.Th>Preplant</Table.Th>
-          <Table.Th>Planted</Table.Th>
-          <Table.Th>Sprouted</Table.Th>
-          <Table.Th>Flowered</Table.Th>
-          <Table.Th>Harvest Start</Table.Th>
-          <Table.Th>Harvest End</Table.Th>
-          {isAdmin && <Table.Th>Actions</Table.Th>}
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {records.map((record) => (
-          <Table.Tr key={record.id}>
-            <Table.Td fw={500}>{record.year}</Table.Td>
-            <Table.Td>{formatDate(record.preplantDate)}</Table.Td>
-            <Table.Td>{formatDate(record.plantDate)}</Table.Td>
-            <Table.Td>{formatDate(record.sproutDate)}</Table.Td>
-            <Table.Td>{formatDate(record.flowerDate)}</Table.Td>
-            <Table.Td>{formatDate(record.harvestStartDate)}</Table.Td>
-            <Table.Td>{formatDate(record.harvestEndDate)}</Table.Td>
-            {isAdmin && (
-              <Table.Td>
-                <Group gap="xs">
-                  <ActionIcon variant="subtle" color="blue" onClick={() => onEdit(record)}>
-                    <IconEdit size={16} />
-                  </ActionIcon>
-                  <ActionIcon
-                    variant="subtle"
-                    color="red"
-                    loading={deletingId === record.id}
-                    onClick={() => handleDelete(record)}
-                  >
-                    <IconTrash size={16} />
-                  </ActionIcon>
-                </Group>
-              </Table.Td>
-            )}
+    <Table.ScrollContainer minWidth={700}>
+      <Table striped>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Year</Table.Th>
+            <Table.Th>Preplant</Table.Th>
+            <Table.Th>Planted</Table.Th>
+            <Table.Th>Sprouted</Table.Th>
+            <Table.Th>Flowered</Table.Th>
+            <Table.Th>Harvest Start</Table.Th>
+            <Table.Th>Harvest End</Table.Th>
+            {isAdmin && <Table.Th>Actions</Table.Th>}
           </Table.Tr>
-        ))}
-      </Table.Tbody>
-    </Table>
+        </Table.Thead>
+        <Table.Tbody>
+          {records.map((record) => (
+            <Table.Tr key={record.id}>
+              <Table.Td fw={500}>{record.year}</Table.Td>
+              <Table.Td>{formatDate(record.preplantDate)}</Table.Td>
+              <Table.Td>{formatDate(record.plantDate)}</Table.Td>
+              <Table.Td>{formatDate(record.sproutDate)}</Table.Td>
+              <Table.Td>{formatDate(record.flowerDate)}</Table.Td>
+              <Table.Td>{formatDate(record.harvestStartDate)}</Table.Td>
+              <Table.Td>{formatDate(record.harvestEndDate)}</Table.Td>
+              {isAdmin && (
+                <Table.Td>
+                  <Group gap="xs">
+                    <ActionIcon variant="subtle" color="blue" onClick={() => onEdit(record)}>
+                      <IconEdit size={16} />
+                    </ActionIcon>
+                    <ActionIcon
+                      variant="subtle"
+                      color="red"
+                      loading={deletingId === record.id}
+                      onClick={() => handleDelete(record)}
+                    >
+                      <IconTrash size={16} />
+                    </ActionIcon>
+                  </Group>
+                </Table.Td>
+              )}
+            </Table.Tr>
+          ))}
+        </Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }
 

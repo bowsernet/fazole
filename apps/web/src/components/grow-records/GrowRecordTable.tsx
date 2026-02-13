@@ -4,9 +4,9 @@ import { Link } from 'react-router';
 
 import { ActionIcon, Anchor, Group, Table, Text, UnstyledButton } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconChevronDown, IconChevronUp, IconEdit, IconSelector, IconTrash } from '@tabler/icons-react';
 
 import type { Bean, GrowRecord } from '@fazole/common';
+import { IconChevronDown, IconChevronUp, IconEdit, IconSelector, IconTrash } from '@tabler/icons-react';
 
 import { restoreGrowRecord, softDeleteGrowRecord } from '../../lib/firestore/grow-records';
 
@@ -68,70 +68,69 @@ export function GrowRecordTable({
   }
 
   return (
-    <Table striped highlightOnHover>
-      <Table.Thead>
-        <Table.Tr>
-          <Table.Th>Bean</Table.Th>
-          <Table.Th>
-            <SortableHeader field="year" label="Year" sort={sort} onSort={onSort} />
-          </Table.Th>
-          <Table.Th>Preplant</Table.Th>
-          <Table.Th>Planted</Table.Th>
-          <Table.Th>Sprouted</Table.Th>
-          <Table.Th>Flowered</Table.Th>
-          <Table.Th>Harvest Start</Table.Th>
-          <Table.Th>Harvest End</Table.Th>
-          {isAdmin && <Table.Th>Actions</Table.Th>}
-        </Table.Tr>
-      </Table.Thead>
-      <Table.Tbody>
-        {records.map((record) => {
-          const bean = beansMap[record.beanId];
-          return (
-            <Table.Tr key={record.id}>
-              <Table.Td>
-                {bean ? (
-                  <Anchor component={Link} to={`/beans/${bean.id}`} fw={500}>
-                    {bean.name}
-                  </Anchor>
-                ) : (
-                  <Text c="dimmed" size="sm">Unknown</Text>
-                )}
-              </Table.Td>
-              <Table.Td fw={500}>{record.year}</Table.Td>
-              <Table.Td>{formatDate(record.preplantDate)}</Table.Td>
-              <Table.Td>{formatDate(record.plantDate)}</Table.Td>
-              <Table.Td>{formatDate(record.sproutDate)}</Table.Td>
-              <Table.Td>{formatDate(record.flowerDate)}</Table.Td>
-              <Table.Td>{formatDate(record.harvestStartDate)}</Table.Td>
-              <Table.Td>{formatDate(record.harvestEndDate)}</Table.Td>
-              {isAdmin && (
+    <Table.ScrollContainer minWidth={800}>
+      <Table striped highlightOnHover>
+        <Table.Thead>
+          <Table.Tr>
+            <Table.Th>Bean</Table.Th>
+            <Table.Th>
+              <SortableHeader field="year" label="Year" sort={sort} onSort={onSort} />
+            </Table.Th>
+            <Table.Th>Preplant</Table.Th>
+            <Table.Th>Planted</Table.Th>
+            <Table.Th>Sprouted</Table.Th>
+            <Table.Th>Flowered</Table.Th>
+            <Table.Th>Harvest Start</Table.Th>
+            <Table.Th>Harvest End</Table.Th>
+            {isAdmin && <Table.Th>Actions</Table.Th>}
+          </Table.Tr>
+        </Table.Thead>
+        <Table.Tbody>
+          {records.map((record) => {
+            const bean = beansMap[record.beanId];
+            return (
+              <Table.Tr key={record.id}>
                 <Table.Td>
-                  <Group gap="xs">
-                    <ActionIcon
-                      variant="subtle"
-                      color="blue"
-                      component={Link}
-                      to={`/grow-records/${record.id}/edit`}
-                    >
-                      <IconEdit size={16} />
-                    </ActionIcon>
-                    <ActionIcon
-                      variant="subtle"
-                      color="red"
-                      loading={deletingId === record.id}
-                      onClick={() => handleDelete(record)}
-                    >
-                      <IconTrash size={16} />
-                    </ActionIcon>
-                  </Group>
+                  {bean ? (
+                    <Anchor component={Link} to={`/beans/${bean.id}`} fw={500}>
+                      {bean.name}
+                    </Anchor>
+                  ) : (
+                    <Text c="dimmed" size="sm">
+                      Unknown
+                    </Text>
+                  )}
                 </Table.Td>
-              )}
-            </Table.Tr>
-          );
-        })}
-      </Table.Tbody>
-    </Table>
+                <Table.Td fw={500}>{record.year}</Table.Td>
+                <Table.Td>{formatDate(record.preplantDate)}</Table.Td>
+                <Table.Td>{formatDate(record.plantDate)}</Table.Td>
+                <Table.Td>{formatDate(record.sproutDate)}</Table.Td>
+                <Table.Td>{formatDate(record.flowerDate)}</Table.Td>
+                <Table.Td>{formatDate(record.harvestStartDate)}</Table.Td>
+                <Table.Td>{formatDate(record.harvestEndDate)}</Table.Td>
+                {isAdmin && (
+                  <Table.Td>
+                    <Group gap="xs">
+                      <ActionIcon variant="subtle" color="blue" component={Link} to={`/grow-records/${record.id}/edit`}>
+                        <IconEdit size={16} />
+                      </ActionIcon>
+                      <ActionIcon
+                        variant="subtle"
+                        color="red"
+                        loading={deletingId === record.id}
+                        onClick={() => handleDelete(record)}
+                      >
+                        <IconTrash size={16} />
+                      </ActionIcon>
+                    </Group>
+                  </Table.Td>
+                )}
+              </Table.Tr>
+            );
+          })}
+        </Table.Tbody>
+      </Table>
+    </Table.ScrollContainer>
   );
 }
 

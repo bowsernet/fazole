@@ -3,7 +3,9 @@
   "printWidth": 120,
   "trailingComma": "es5",
   "proseWrap": "always",
+  "importOrder": ["dotenv", "^react", "^vite", "@mantine", "<THIRD_PARTY_MODULES>", "@/", "^\\."],
   "importOrderSeparation": true,
-  "importOrderSortSpecifiers": true
+  "importOrderSortSpecifiers": true,
+  "plugins": ["@trivago/prettier-plugin-sort-imports"]
 }
 

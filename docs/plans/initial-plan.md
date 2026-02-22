@@ -262,7 +262,7 @@ git commit -m "chore: add packages/common skeleton"
 **Step 3: Create src/index.ts with image presets and shared config**
 
 ```ts
-export const FIREBASE_REGION = 'europe-west1';
+export const FIREBASE_REGION = 'europe-west3';
 
 export const PAGINATION_PAGE_SIZE = 50;
 

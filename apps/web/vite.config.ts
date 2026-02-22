@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
+  server: { port: 5040, allowedHosts: ['fazole.l'] },
   plugins: [react()],
   resolve: {
     alias: {

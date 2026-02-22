@@ -1,4 +1,4 @@
-export const FIREBASE_REGION = 'europe-west1';
+export const FIREBASE_REGION = 'europe-west3';
 
 export const PAGINATION_PAGE_SIZE = 50;
 

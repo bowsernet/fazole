@@ -9,8 +9,8 @@
     "test": "turbo test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "emulators": "firebase emulators:start",
-    "emulators:export": "firebase emulators:export ./firebase-export"
+    "emu": "firebase emulators:start",
+    "emu:export": "firebase emulators:export ./firebase-export"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.0.0",

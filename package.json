@@ -9,7 +9,7 @@
     "test": "turbo test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "emu": "firebase emulators:start",
+    "emu": "turbo build && firebase emulators:start",
     "emu:export": "firebase emulators:export ./firebase-export"
   },
   "devDependencies": {

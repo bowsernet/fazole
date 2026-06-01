@@ -4,6 +4,7 @@ import { browserLocalPersistence, connectAuthEmulator, getAuth, setPersistence }
 import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore';
 import { connectFunctionsEmulator, getFunctions } from 'firebase/functions';
 import { connectStorageEmulator, getStorage } from 'firebase/storage';
+import firebaseJson from '../../../../firebase.json';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -24,8 +25,9 @@ export const storage = getStorage(app);
 export const functions = getFunctions(app, FIREBASE_REGION);
 
 if (import.meta.env.VITE_USE_EMULATORS === 'true') {
-  connectAuthEmulator(auth, 'http://localhost:9099');
-  connectFirestoreEmulator(db, 'localhost', 8080);
-  connectStorageEmulator(storage, 'localhost', 9199);
-  connectFunctionsEmulator(functions, 'localhost', 5001);
+  const { emulators } = firebaseJson;
+  connectAuthEmulator(auth, `http://localhost:${emulators.auth.port}`);
+  connectFirestoreEmulator(db, 'localhost', emulators.firestore.port);
+  connectStorageEmulator(storage, 'localhost', emulators.storage.port);
+  connectFunctionsEmulator(functions, 'localhost', emulators.functions.port);
 }

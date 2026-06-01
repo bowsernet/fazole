@@ -10,7 +10,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "emu": "turbo build && firebase emulators:start",
-    "emu:export": "firebase emulators:export ./firebase-export"
+    "emu:export": "firebase emulators:export ./firebase-export",
+    "deploy": "turbo build && firebase deploy --only hosting",
+    "deploy:all": "turbo build && firebase deploy"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^5.0.0",

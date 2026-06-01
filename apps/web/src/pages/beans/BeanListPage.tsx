@@ -14,7 +14,8 @@ import type { BeanFiltersState, SortState } from '../../components/beans';
 import { EmptyState, ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
 import { useAuth } from '../../hooks/use-auth';
 import { useQuery } from '../../hooks/use-query';
-import { fetchBeans } from '../../lib/firestore/beans';
+import { selectBeans } from '../../lib/beans-select';
+import { fetchAllBeans } from '../../lib/firestore/beans';
 import { fetchBeanImages } from '../../lib/firestore/images';
 import { fetchSources } from '../../lib/firestore/sources';
 
@@ -34,55 +35,55 @@ export function BeanListPage(): ReactElement {
 
   const isLarge = useMediaQuery('(min-width: 75em)');
 
-  const fetchOptions = useMemo(
-    () => ({
-      filters: {
-        species: (filters.species as BeanSpecies) ?? undefined,
-        podType: (filters.podType as PodType) ?? undefined,
-        plantType: (filters.plantType as PlantType) ?? undefined,
-        yearGrown: filters.yearGrown ? Number(filters.yearGrown) : undefined,
-        beanColor: (filters.beanColor as BeanColor) ?? undefined,
-        sourceId: filters.sourceId ?? undefined,
-      },
-      sortField: sort.field,
-      sortDir: sort.dir,
-      page,
-    }),
-    [filters, sort, page]
-  );
-
   const {
-    data: beansResult,
+    data: allBeans,
     loading,
     error,
     refetch,
-  } = useQuery(useCallback(() => fetchBeans(fetchOptions), [fetchOptions]));
+  } = useQuery(useCallback(() => fetchAllBeans(), []));
+
+  const { beans, total } = useMemo(
+    () =>
+      selectBeans(allBeans ?? [], {
+        filters: {
+          species: (filters.species as BeanSpecies) ?? undefined,
+          podType: (filters.podType as PodType) ?? undefined,
+          plantType: (filters.plantType as PlantType) ?? undefined,
+          yearGrown: filters.yearGrown ? Number(filters.yearGrown) : undefined,
+          beanColor: (filters.beanColor as BeanColor) ?? undefined,
+          sourceId: filters.sourceId ?? undefined,
+        },
+        sortField: sort.field,
+        sortDir: sort.dir,
+        page,
+      }),
+    [allBeans, filters, sort, page]
+  );
 
   const { data: sources } = useQuery(useCallback(() => fetchSources(), []));
 
   const { data: imagesMap } = useQuery(
     useCallback(async () => {
-      if (!beansResult?.beans.length) return {} as Record<string, BeanImage[]>;
+      if (!beans.length) return {} as Record<string, BeanImage[]>;
       const entries = await Promise.all(
-        beansResult.beans.map(async (bean) => {
+        beans.map(async (bean) => {
           const images = await fetchBeanImages(bean.id);
           return [bean.id, images] as const;
         })
       );
       return Object.fromEntries(entries) as Record<string, BeanImage[]>;
-    }, [beansResult])
+    }, [beans])
   );
 
   const yearOptions = useMemo(() => {
-    if (!beansResult?.beans) return [];
     const years = new Set<number>();
-    beansResult.beans.forEach((b) => b.yearsGrown.forEach((y) => years.add(y)));
+    (allBeans ?? []).forEach((b) => b.yearsGrown.forEach((y) => years.add(y)));
     return Array.from(years)
       .sort((a, b) => b - a)
       .map(String);
-  }, [beansResult]);
+  }, [allBeans]);
 
-  const totalPages = beansResult ? Math.ceil(beansResult.total / PAGINATION_PAGE_SIZE) : 0;
+  const totalPages = Math.ceil(total / PAGINATION_PAGE_SIZE);
 
   function handleSort(field: string): void {
     setSort((prev) =>
@@ -143,18 +144,18 @@ export function BeanListPage(): ReactElement {
           <Stack gap="md" style={{ flex: 1, minWidth: 0 }}>
             {loading && <LoadingState />}
             {error && <ErrorState message={error.message} onRetry={refetch} />}
-            {!loading && !error && beansResult?.beans.length === 0 && <EmptyState message="No beans found." />}
+            {!loading && !error && beans.length === 0 && <EmptyState message="No beans found." />}
 
-            {!loading && !error && beansResult && beansResult.beans.length > 0 && (
+            {!loading && !error && beans.length > 0 && (
               <>
                 {viewMode === 'card' ? (
                   <SimpleGrid cols={{ base: 1, xs: 2, sm: 3, lg: 3 }} spacing="md">
-                    {beansResult.beans.map((bean) => (
+                    {beans.map((bean) => (
                       <BeanCard key={bean.id} bean={bean} images={imagesMap?.[bean.id] ?? []} />
                     ))}
                   </SimpleGrid>
                 ) : (
-                  <BeanTable beans={beansResult.beans} imagesMap={imagesMap ?? {}} sort={sort} onSort={handleSort} />
+                  <BeanTable beans={beans} imagesMap={imagesMap ?? {}} sort={sort} onSort={handleSort} />
                 )}
 
                 {totalPages > 1 && (

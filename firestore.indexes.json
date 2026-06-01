@@ -1,4 +1,39 @@
 {
-  "indexes": [],
+  "indexes": [
+    {
+      "collectionGroup": "growRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "deletedAt", "order": "ASCENDING" },
+        { "fieldPath": "year", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "growRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "deletedAt", "order": "ASCENDING" },
+        { "fieldPath": "year", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "growRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "deletedAt", "order": "ASCENDING" },
+        { "fieldPath": "beanId", "order": "ASCENDING" },
+        { "fieldPath": "year", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "growRecords",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "deletedAt", "order": "ASCENDING" },
+        { "fieldPath": "beanId", "order": "ASCENDING" },
+        { "fieldPath": "year", "order": "ASCENDING" }
+      ]
+    }
+  ],
   "fieldOverrides": []
 }

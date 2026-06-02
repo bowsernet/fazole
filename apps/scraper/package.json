@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dryrun": "tsx src/index.ts dryrun",
+    "scrape": "tsx src/index.ts scrape",
     "lint": "tsc --noEmit",
     "test": "vitest run"
   },

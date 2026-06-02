@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "scrape:dryrun": "pnpm --filter @fazole/scraper dryrun",
+    "scrape": "pnpm --filter @fazole/scraper scrape",
     "emu": "turbo build && firebase emulators:start",
     "emu:export": "firebase emulators:export ./firebase-export",
     "deploy": "turbo build && firebase deploy --only hosting",

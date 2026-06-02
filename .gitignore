@@ -13,3 +13,6 @@ firestore-debug.log
 
 # ABCW scraper dry-run output
 docs/plans/dryrun/
+
+# ABCW scraper local cache
+.scraper-cache/

@@ -12,6 +12,7 @@
     "@anthropic-ai/sdk": "^0.65.0",
     "@fazole/common": "workspace:*",
     "cheerio": "^1.0.0",
+    "csv-parse": "^6.2.1",
     "csv-stringify": "^6.5.0"
   },
   "devDependencies": {

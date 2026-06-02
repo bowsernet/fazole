@@ -27,6 +27,7 @@ export function parseBeanPage(html: string, baseUrl: string): ParsedBean[] {
     const rawDescription = $block
       .children('p')
       .not('.title')
+      .filter((_i, el) => !/Packet Size/i.test($(el).text()))
       .map((_i, el) => $(el).text().trim())
       .get()
       .join('\n\n')

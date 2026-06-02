@@ -35,4 +35,41 @@ describe('parseBeanPage', () => {
     expect(beans[0]?.rawDescription).toMatch(/^Bush\/Dry\./);
     expect(beans[0]?.rawDescription).not.toContain('Packet Size');
   });
+
+  it('asserts slugs for relative and absolute image sources', () => {
+    expect(beans[1]?.slug).toBe('king-of-the-garden');
+    expect(beans[2]?.slug).toBe('scarlet-emperor');
+  });
+
+  it('skips an img.bean that has no title', () => {
+    const noTitle = `
+      <div class="imgtxtadjust">
+        <img src="images/no-name.jpg" class="bean" alt="some beans" />
+        <p>Bush/Dry. A description with no preceding title.</p>
+      </div>`;
+    expect(parseBeanPage(noTitle, BASE)).toHaveLength(0);
+  });
+
+  it('defaults alt to empty string when the attribute is absent', () => {
+    const noAlt = `
+      <div class="imgtxtadjust">
+        <img src="images/no-alt.jpg" class="bean" />
+        <p class="title">No Alt Bean</p>
+        <p>Bush/Dry. No alt attribute here.</p>
+      </div>`;
+    expect(parseBeanPage(noAlt, BASE)[0]?.alt).toBe('');
+  });
+
+  it('never leaks the packet line into the description, even as a direct child', () => {
+    const directPacket = `
+      <div class="imgtxtadjust">
+        <img src="images/direct.jpg" class="bean" alt="beans" />
+        <p class="title">Direct Packet</p>
+        <p>Packet Size 25 Seeds $5.00</p>
+        <p>Bush/Dry. The real description.</p>
+      </div>`;
+    const [bean] = parseBeanPage(directPacket, BASE);
+    expect(bean?.rawDescription).toBe('Bush/Dry. The real description.');
+    expect(bean?.rawDescription).not.toContain('Packet Size');
+  });
 });

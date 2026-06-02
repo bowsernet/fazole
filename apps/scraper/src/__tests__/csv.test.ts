@@ -12,7 +12,7 @@ function base(): ScrapedBean {
     packet: 'Packet Size 30 Seeds $5.00',
     rawDescription: 'Bush/Dry. Robust.',
     origin: 'bean',
-    pageId: 'bean-0',
+    pageId: 'bean-1',
     rules: { species: 'vulgaris', plantType: 'bush', podType: 'dry' },
     llm: null,
   };

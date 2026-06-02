@@ -17,6 +17,15 @@ import type { ScrapedBean } from '../lib/types';
 
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
+function parsePositiveInt(value: string | undefined, flag: string): number | undefined {
+  if (value === undefined) return undefined;
+  const n = Number(value);
+  if (!Number.isInteger(n) || n <= 0) {
+    throw new Error(`${flag} must be a positive integer, got "${value}"`);
+  }
+  return n;
+}
+
 export async function dryrun(argv: string[]): Promise<void> {
   const { values } = parseArgs({
     args: argv.filter((a) => a !== '--'),
@@ -29,12 +38,23 @@ export async function dryrun(argv: string[]): Promise<void> {
     },
   });
 
-  const which = (values.pages ?? 'all') as 'bean' | 'network' | 'all';
+  const which = values.pages ?? 'all';
+  if (which !== 'bean' && which !== 'network' && which !== 'all') {
+    throw new Error(`--pages must be one of bean|network|all, got "${which}"`);
+  }
+
+  const limit = parsePositiveInt(values.limit, '--limit');
+  const concurrency = parsePositiveInt(values.concurrency, '--concurrency') ?? 5;
+
+  if (!values['no-llm'] && !process.env.ANTHROPIC_API_KEY) {
+    throw new Error('ANTHROPIC_API_KEY is not set. Set it, or pass --no-llm to skip LLM extraction.');
+  }
+
+  const outDir = values.out ?? 'docs/plans/dryrun';
   const refs = buildPageRefs(which);
   const beans: ScrapedBean[] = [];
 
   for (const [i, ref] of refs.entries()) {
-    if (ref === undefined) continue;
     if (i > 0) await sleep(1000); // 1s spacing between requests
     console.log(`Fetching ${ref.pageId} — ${ref.url}`);
     const html = await fetchPage(ref.url);
@@ -47,9 +67,8 @@ export async function dryrun(argv: string[]): Promise<void> {
   console.log(`Parsed ${beans.length} beans across ${refs.length} pages.`);
 
   if (!values['no-llm']) {
-    const work = values.limit ? beans.slice(0, Number(values.limit)) : beans;
+    const work = limit ? beans.slice(0, limit) : beans;
     const client = new Anthropic(); // reads ANTHROPIC_API_KEY
-    const concurrency = Number(values.concurrency ?? '5');
     console.log(`Running LLM extraction on ${work.length} beans (concurrency ${concurrency})...`);
     await mapWithConcurrency(work, concurrency, async (bean) => {
       try {
@@ -60,7 +79,6 @@ export async function dryrun(argv: string[]): Promise<void> {
     });
   }
 
-  const outDir = values.out ?? 'docs/plans/dryrun';
   mkdirSync(outDir, { recursive: true });
   const csv = stringify(beans.map(toCsvRow), { header: true, columns: [...CSV_COLUMNS] });
   writeFileSync(join(outDir, 'beans-dryrun.csv'), csv);

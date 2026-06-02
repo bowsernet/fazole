@@ -5,7 +5,7 @@ export type Origin = 'bean' | 'network';
 export interface PageRef {
   url: string;
   origin: Origin;
-  pageId: string; // e.g. "bean-0", "network-7"
+  pageId: string; // e.g. "bean-1", "network-7"
 }
 
 export interface ParsedBean {

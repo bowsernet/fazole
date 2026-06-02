@@ -10,3 +10,6 @@ firebase-export
 firebase-debug.log
 firestore-debug.log
 .firebase
+
+# ABCW scraper dry-run output
+docs/plans/dryrun/

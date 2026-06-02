@@ -6,6 +6,7 @@
   "scripts": {
     "dryrun": "tsx src/index.ts dryrun",
     "scrape": "tsx src/index.ts scrape",
+    "process": "tsx src/index.ts process",
     "lint": "tsc --noEmit",
     "test": "vitest run"
   },

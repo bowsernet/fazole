@@ -1,4 +1,5 @@
 import { dryrun } from './commands/dryrun';
+import { process_ } from './commands/process';
 import { scrape } from './commands/scrape';
 
 const [command, ...rest] = process.argv.slice(2);
@@ -6,6 +7,7 @@ const [command, ...rest] = process.argv.slice(2);
 const commands: Record<string, (argv: string[]) => Promise<void>> = {
   dryrun,
   scrape,
+  process: process_,
 };
 
 const handler = command ? commands[command] : undefined;
@@ -16,7 +18,7 @@ if (handler) {
   });
 } else {
   console.error(
-    `Unknown command: ${command ?? '(none)'}.\nUsage: scrape [--cache DIR] | process --target emulator|prod [...] | dryrun [...]`,
+    `Unknown command: ${command ?? '(none)'}.\nUsage: scrape [--cache DIR] | process --target emulator|prod [--limit N] [--model M] [--reimport-images] [--cache DIR] | dryrun [...]`,
   );
   process.exit(1);
 }

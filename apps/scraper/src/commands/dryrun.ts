@@ -1,16 +1,15 @@
+import Anthropic from '@anthropic-ai/sdk';
+import { stringify } from 'csv-stringify/sync';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 
-import Anthropic from '@anthropic-ai/sdk';
-import { stringify } from 'csv-stringify/sync';
-
-import { CSV_COLUMNS, toCsvRow } from '../lib/csv';
 import { mapWithConcurrency } from '../lib/concurrency';
-import { computeOverlap, formatOverlapReport } from '../lib/overlap';
+import { CSV_COLUMNS, toCsvRow } from '../lib/csv';
 import { extractLlm } from '../lib/extract-llm';
 import { extractRules } from '../lib/extract-rules';
 import { fetchPage } from '../lib/fetch-page';
+import { computeOverlap, formatOverlapReport } from '../lib/overlap';
 import { buildPageRefs } from '../lib/pages';
 import { parseBeanPage } from '../lib/parse-bean-page';
 import type { ScrapedBean } from '../lib/types';
@@ -88,6 +87,6 @@ export async function dryrun(argv: string[]): Promise<void> {
 
   console.log(`Wrote ${beans.length} rows to ${outDir}/beans-dryrun.csv`);
   console.log(
-    `Overlap: ${overlap.overlapCount} names on both pages (${overlap.overlapPctOfNetwork.toFixed(1)}% of network).`,
+    `Overlap: ${overlap.overlapCount} names on both pages (${overlap.overlapPctOfNetwork.toFixed(1)}% of network).`
   );
 }

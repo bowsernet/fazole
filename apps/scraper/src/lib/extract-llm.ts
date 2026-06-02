@@ -72,7 +72,8 @@ function parseLlmFields(input: unknown, name: string): LlmFields {
   }
   const o = input as Record<string, unknown>;
   if (!SPECIES.includes(o.species as string)) throw new Error(`bad species for "${name}": ${String(o.species)}`);
-  if (!PLANT_TYPES.includes(o.plantType as string)) throw new Error(`bad plantType for "${name}": ${String(o.plantType)}`);
+  if (!PLANT_TYPES.includes(o.plantType as string))
+    throw new Error(`bad plantType for "${name}": ${String(o.plantType)}`);
   if (!POD_TYPES.includes(o.podType as string)) throw new Error(`bad podType for "${name}": ${String(o.podType)}`);
   if (!Array.isArray(o.beanColors) || !o.beanColors.every((c) => COLORS.includes(c as string))) {
     throw new Error(`bad beanColors for "${name}": ${String(o.beanColors)}`);

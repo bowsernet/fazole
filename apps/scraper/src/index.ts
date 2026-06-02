@@ -10,7 +10,7 @@ if (command === 'dryrun') {
 } else {
   console.error(
     `Unknown command: ${command ?? '(none)'}.\n` +
-      'Usage: dryrun [--limit N] [--pages bean|network|all] [--no-llm] [--concurrency N] [--out DIR]',
+      'Usage: dryrun [--limit N] [--pages bean|network|all] [--no-llm] [--concurrency N] [--out DIR]'
   );
   process.exit(1);
 }

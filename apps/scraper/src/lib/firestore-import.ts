@@ -1,9 +1,9 @@
 import { FieldValue } from 'firebase-admin/firestore';
 
 import { db } from './admin';
-import { ABCW_SOURCES } from './sources';
-import { slugifyName } from './slug';
 import type { CsvBean } from './scrape-csv';
+import { slugifyName } from './slug';
+import { ABCW_SOURCES } from './sources';
 import type { LlmFields } from './types';
 
 export async function upsertSources(): Promise<void> {
@@ -14,7 +14,7 @@ export async function upsertSources(): Promise<void> {
       .doc(s.id)
       .set(
         { name: s.name, color: s.color, link: s.link, description: s.description, updatedAt: now, createdAt: now },
-        { merge: true },
+        { merge: true }
       );
   }
 }

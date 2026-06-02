@@ -1,6 +1,6 @@
+import type { BeanSpecies, PlantType, PodType } from '@fazole/common';
 import { parse } from 'csv-parse/sync';
 
-import type { BeanSpecies, PlantType, PodType } from '@fazole/common';
 import type { Origin, RuleFields } from './types';
 
 export interface CsvBean {

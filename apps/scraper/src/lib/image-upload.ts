@@ -26,7 +26,7 @@ export async function uploadSourceImage(beanId: string, localPath: string): Prom
       updatedAt: now,
       ...(snap.exists ? {} : { createdAt: now }),
     },
-    { merge: true },
+    { merge: true }
   );
 
   await bucket().upload(localPath, {

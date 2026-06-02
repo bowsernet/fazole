@@ -1,21 +1,20 @@
+import Anthropic from '@anthropic-ai/sdk';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 
-import Anthropic from '@anthropic-ai/sdk';
-
 import { type Target, initAdmin } from '../lib/admin';
+import { coerceExtraction } from '../lib/coerce-extraction';
 import { mapWithConcurrency } from '../lib/concurrency';
 import { extractMultimodal } from '../lib/extract-multimodal';
-import { coerceExtraction } from '../lib/coerce-extraction';
 import { extractionKey, readExtractionCache, writeExtractionCache } from '../lib/extraction-cache';
+import { listAbcwBeanIds, markDeletedInSource, upsertBean, upsertSources } from '../lib/firestore-import';
 import { fileHash, uploadSourceImage } from '../lib/image-upload';
 import { computeSoftDeletes, dedupeByPreferBean } from '../lib/import-plan';
-import { listAbcwBeanIds, markDeletedInSource, upsertBean, upsertSources } from '../lib/firestore-import';
+import { type ProcessState, imageNeedsUpload, readState, statePath, writeState } from '../lib/process-state';
 import { parseScrapeCsv } from '../lib/scrape-csv';
 import { slugifyName } from '../lib/slug';
 import { sourceIdForOrigin } from '../lib/sources';
-import { type ProcessState, imageNeedsUpload, readState, statePath, writeState } from '../lib/process-state';
 
 export async function process_(argv: string[]): Promise<void> {
   const { values } = parseArgs({
@@ -76,7 +75,7 @@ export async function process_(argv: string[]): Promise<void> {
       if (!fields) {
         fields = hasImage
           ? await extractMultimodal(getClient(), bean, values.model ?? undefined).catch(() =>
-              coerceExtraction({}, bean.rules),
+              coerceExtraction({}, bean.rules)
             )
           : coerceExtraction({}, bean.rules);
         cache[key] = fields;
@@ -111,6 +110,6 @@ export async function process_(argv: string[]): Promise<void> {
   }
 
   console.log(
-    `Processed ${work.length}/${allBeans.length} beans → ${target} | images uploaded: ${summary.imagesUploaded} | failed: ${summary.failed}`,
+    `Processed ${work.length}/${allBeans.length} beans → ${target} | images uploaded: ${summary.imagesUploaded} | failed: ${summary.failed}`
   );
 }

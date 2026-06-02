@@ -10,8 +10,12 @@ const POD_TYPES: PodType[] = ['snap', 'dry'];
 export function coerceExtraction(raw: unknown, rules: RuleFields): LlmFields {
   const o = typeof raw === 'object' && raw !== null ? (raw as Record<string, unknown>) : {};
 
-  const species = SPECIES.includes(o['species'] as BeanSpecies) ? (o['species'] as BeanSpecies) : rules.species || 'vulgaris';
-  const plantType = PLANT_TYPES.includes(o['plantType'] as PlantType) ? (o['plantType'] as PlantType) : rules.plantType || 'bush';
+  const species = SPECIES.includes(o['species'] as BeanSpecies)
+    ? (o['species'] as BeanSpecies)
+    : rules.species || 'vulgaris';
+  const plantType = PLANT_TYPES.includes(o['plantType'] as PlantType)
+    ? (o['plantType'] as PlantType)
+    : rules.plantType || 'bush';
   const podType = POD_TYPES.includes(o['podType'] as PodType) ? (o['podType'] as PodType) : rules.podType || 'dry';
 
   const beanColors = Array.isArray(o['beanColors'])

@@ -1,7 +1,6 @@
+import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync } from 'node:fs';
 import { extname } from 'node:path';
-
-import Anthropic from '@anthropic-ai/sdk';
 
 import { coerceExtraction } from './coerce-extraction';
 import type { CsvBean } from './scrape-csv';
@@ -54,7 +53,7 @@ export async function extractMultimodal(
   client: Anthropic,
   bean: CsvBean,
   model: string = DEFAULT_MODEL,
-  retries = 2,
+  retries = 2
 ): Promise<LlmFields> {
   const data = readFileSync(bean.localImagePath).toString('base64');
   let lastError: unknown;

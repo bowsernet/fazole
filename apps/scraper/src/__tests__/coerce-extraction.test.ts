@@ -9,13 +9,22 @@ describe('coerceExtraction', () => {
   it('keeps valid fields and valid colors (including blue)', () => {
     const r = coerceExtraction(
       { species: 'lima', plantType: 'runner', podType: 'snap', beanColors: ['white', 'blue'], notes: 'ok' },
-      rules,
+      rules
     );
-    expect(r).toEqual({ species: 'lima', plantType: 'runner', podType: 'snap', beanColors: ['white', 'blue'], notes: 'ok' });
+    expect(r).toEqual({
+      species: 'lima',
+      plantType: 'runner',
+      podType: 'snap',
+      beanColors: ['white', 'blue'],
+      notes: 'ok',
+    });
   });
 
   it('drops unknown colors instead of failing', () => {
-    const r = coerceExtraction({ species: 'vulgaris', plantType: 'bush', podType: 'dry', beanColors: ['white', 'teal', 5], notes: '' }, rules);
+    const r = coerceExtraction(
+      { species: 'vulgaris', plantType: 'bush', podType: 'dry', beanColors: ['white', 'teal', 5], notes: '' },
+      rules
+    );
     expect(r.beanColors).toEqual(['white']);
   });
 

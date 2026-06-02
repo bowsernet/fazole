@@ -16,3 +16,9 @@ docs/plans/dryrun/
 
 # ABCW scraper local cache
 .scraper-cache/
+
+# Local Claude Code settings
+.claude/
+
+# Phase 1 dry-run output (generated)
+**/docs/plans/dryrun/

@@ -1,5 +1,6 @@
-import { stringify } from 'csv-stringify/sync';
 import { describe, expect, it } from 'vitest';
+
+import { stringify } from 'csv-stringify/sync';
 
 import { SCRAPE_COLUMNS, parseScrapeCsv, toScrapeRow } from '../lib/scrape-csv';
 import type { CsvBean } from '../lib/scrape-csv';

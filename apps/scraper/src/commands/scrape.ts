@@ -1,16 +1,15 @@
+import { stringify } from 'csv-stringify/sync';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { parseArgs } from 'node:util';
 
-import { stringify } from 'csv-stringify/sync';
-
+import { downloadImage } from '../lib/download-image';
 import { extractRules } from '../lib/extract-rules';
 import { fetchPage } from '../lib/fetch-page';
 import { type Manifest, hashContent, isUnchanged, readManifest, writeManifest } from '../lib/manifest';
 import { buildPageRefs } from '../lib/pages';
 import { parseBeanPage } from '../lib/parse-bean-page';
-import { downloadImage } from '../lib/download-image';
-import { SCRAPE_COLUMNS, type CsvBean, parseScrapeCsv, toScrapeRow } from '../lib/scrape-csv';
+import { type CsvBean, SCRAPE_COLUMNS, parseScrapeCsv, toScrapeRow } from '../lib/scrape-csv';
 
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 

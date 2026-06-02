@@ -20,7 +20,11 @@ function bean(name: string, origin: 'bean' | 'network'): CsvBean {
 
 describe('dedupeByPreferBean', () => {
   it('keeps the bean-page row when a name appears in both collections', () => {
-    const out = dedupeByPreferBean([bean('Rattlesnake', 'network'), bean('Rattlesnake', 'bean'), bean('Hidatsa', 'network')]);
+    const out = dedupeByPreferBean([
+      bean('Rattlesnake', 'network'),
+      bean('Rattlesnake', 'bean'),
+      bean('Hidatsa', 'network'),
+    ]);
     expect(out).toHaveLength(2);
     const rattlesnake = out.find((b) => b.name === 'Rattlesnake');
     expect(rattlesnake?.origin).toBe('bean');

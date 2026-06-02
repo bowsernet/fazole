@@ -1,5 +1,5 @@
-import { slugifyName } from './slug';
 import type { CsvBean } from './scrape-csv';
+import { slugifyName } from './slug';
 
 export function dedupeByPreferBean(beans: CsvBean[]): CsvBean[] {
   // Bean-origin rows take precedence over network for the same slug id.

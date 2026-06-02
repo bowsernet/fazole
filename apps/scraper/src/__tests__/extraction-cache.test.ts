@@ -1,8 +1,8 @@
+import { describe, expect, it } from 'vitest';
+
 import { mkdtempSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-
-import { describe, expect, it } from 'vitest';
 
 import { extractionKey, readExtractionCache, writeExtractionCache } from '../lib/extraction-cache';
 import type { LlmFields } from '../lib/types';
@@ -16,7 +16,13 @@ describe('extraction-cache', () => {
   it('round-trips through disk', () => {
     const dir = mkdtempSync(join(tmpdir(), 'extcache-'));
     const path = join(dir, 'extractions.json');
-    const fields: LlmFields = { species: 'lima', plantType: 'runner', podType: 'dry', beanColors: ['white'], notes: 'n' };
+    const fields: LlmFields = {
+      species: 'lima',
+      plantType: 'runner',
+      podType: 'dry',
+      beanColors: ['white'],
+      notes: 'n',
+    };
     writeExtractionCache(path, { k1: fields });
     expect(readExtractionCache(path)).toEqual({ k1: fields });
   });

@@ -19,7 +19,7 @@ export function coerceExtraction(raw: unknown, rules: RuleFields): LlmFields {
   const podType = POD_TYPES.includes(o['podType'] as PodType) ? (o['podType'] as PodType) : rules.podType || 'dry';
 
   const beanColors = Array.isArray(o['beanColors'])
-    ? o['beanColors'].filter((c): c is BeanColor => typeof c === 'string' && isValidBeanColor(c))
+    ? o['beanColors'].filter((c): c is BeanColor => typeof c === 'string' && isValidBeanColor(c)).slice(0, 3)
     : [];
 
   return { species, plantType, podType, beanColors, notes: typeof o['notes'] === 'string' ? o['notes'] : '' };

@@ -73,12 +73,19 @@ export async function process_(argv: string[]): Promise<void> {
 
       let fields = cache[key];
       if (!fields) {
-        fields = hasImage
-          ? await extractMultimodal(getClient(), bean, values.model ?? undefined).catch(() =>
-              coerceExtraction({}, bean.rules)
-            )
-          : coerceExtraction({}, bean.rules);
-        cache[key] = fields;
+        if (hasImage) {
+          try {
+            fields = await extractMultimodal(getClient(), bean, values.model ?? undefined);
+            cache[key] = fields; // cache only successful multimodal extractions
+          } catch (err) {
+            console.warn(
+              `extraction failed for ${bean.name}, using rules fallback: ${err instanceof Error ? err.message : String(err)}`
+            );
+            fields = coerceExtraction({}, bean.rules); // not cached — retried next run
+          }
+        } else {
+          fields = coerceExtraction({}, bean.rules); // no image; cheap to recompute, not cached
+        }
       }
 
       const id = await upsertBean(bean, fields, sourceIdForOrigin(bean.origin));

@@ -41,4 +41,18 @@ describe('coerceExtraction', () => {
     expect(r.podType).toBe('dry');
     expect(r.species).toBe('lima');
   });
+
+  it('caps beanColors at three', () => {
+    const r = coerceExtraction(
+      {
+        species: 'vulgaris',
+        plantType: 'bush',
+        podType: 'dry',
+        beanColors: ['white', 'black', 'brown', 'red', 'blue'],
+        notes: '',
+      },
+      { species: 'vulgaris', plantType: 'bush', podType: 'dry' }
+    );
+    expect(r.beanColors).toEqual(['white', 'black', 'brown']);
+  });
 });

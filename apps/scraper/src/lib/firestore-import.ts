@@ -9,13 +9,19 @@ import type { LlmFields } from './types';
 export async function upsertSources(): Promise<void> {
   const now = Date.now();
   for (const s of ABCW_SOURCES) {
-    await db()
-      .collection('sources')
-      .doc(s.id)
-      .set(
-        { name: s.name, color: s.color, link: s.link, description: s.description, updatedAt: now, createdAt: now },
-        { merge: true }
-      );
+    const ref = db().collection('sources').doc(s.id);
+    const snap = await ref.get();
+    await ref.set(
+      {
+        name: s.name,
+        color: s.color,
+        link: s.link,
+        description: s.description,
+        updatedAt: now,
+        ...(snap.exists ? {} : { createdAt: now }),
+      },
+      { merge: true }
+    );
   }
 }
 

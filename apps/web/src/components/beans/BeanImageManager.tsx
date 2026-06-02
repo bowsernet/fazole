@@ -137,7 +137,7 @@ export function BeanImageManager({ beanId, images, onChanged }: BeanImageManager
                 </Table.Td>
                 <Table.Td>
                   <NumberInput
-                    value={img.year}
+                    value={img.year ?? ''}
                     onChange={(v) => handleYearChange(img.id, v)}
                     size="xs"
                     w={80}

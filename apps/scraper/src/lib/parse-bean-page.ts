@@ -28,7 +28,7 @@ export function parseBeanPage(html: string, baseUrl: string): ParsedBean[] {
       .children('p')
       .not('.title')
       .filter((_i, el) => !/Packet Size/i.test($(el).text()))
-      .map((_i, el) => $(el).text().trim())
+      .map((_i, el) => $(el).text().replace(/\s+/g, ' ').trim())
       .get()
       .join('\n\n')
       .trim();

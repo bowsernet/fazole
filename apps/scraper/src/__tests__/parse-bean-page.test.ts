@@ -72,4 +72,16 @@ describe('parseBeanPage', () => {
     expect(bean?.rawDescription).toBe('Bush/Dry. The real description.');
     expect(bean?.rawDescription).not.toContain('Packet Size');
   });
+
+  it('collapses mid-paragraph source newlines into single spaces', () => {
+    const wrapped = `
+      <div class="imgtxtadjust">
+        <img src="images/wrapped.jpg" class="bean" alt="beans" />
+        <p class="title">Wrapped Bean</p>
+        <p>Bush/Dry. A robust variety\n        that wraps across lines\n        in the source HTML.</p>
+      </div>`;
+    const [bean] = parseBeanPage(wrapped, BASE);
+    expect(bean?.rawDescription).toBe('Bush/Dry. A robust variety that wraps across lines in the source HTML.');
+    expect(bean?.rawDescription).not.toContain('\n');
+  });
 });

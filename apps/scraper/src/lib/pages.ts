@@ -3,12 +3,16 @@ import type { Origin, PageRef } from './types';
 const BASE = 'https://www.abeancollectorswindow.com';
 
 function beanPages(): PageRef[] {
-  // beanpage.html, beanpage1.html ... beanpage7.html
-  return Array.from({ length: 8 }, (_, i) => ({
-    url: `${BASE}/beanpage${i === 0 ? '' : i}.html`,
-    origin: 'bean' as Origin,
-    pageId: `bean-${i}`,
-  }));
+  // Page 1 is beanpage.html; pages 2-7 are beanpage2.html .. beanpage7.html.
+  // (beanpage1.html does not exist.)
+  return Array.from({ length: 7 }, (_, i) => {
+    const n = i + 1; // 1..7
+    return {
+      url: `${BASE}/beanpage${n === 1 ? '' : n}.html`,
+      origin: 'bean' as Origin,
+      pageId: `bean-${n}`,
+    };
+  });
 }
 
 function networkPages(): PageRef[] {

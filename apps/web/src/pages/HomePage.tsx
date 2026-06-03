@@ -1,18 +1,18 @@
-import { type ReactElement, useCallback, useMemo, useState } from 'react';
+import { type ReactElement, useMemo, useState } from 'react';
 
 import { Select, SimpleGrid, Title } from '@mantine/core';
 
-import type { Bean, BeanImage, GrowRecord } from '@fazole/common';
+import type { Bean } from '@fazole/common';
+import { useQuery } from '@tanstack/react-query';
 
 import { BeanCard } from '../components/beans';
 import { EmptyState, ErrorState, LoadingState } from '../components/ui';
-import { useQuery } from '../hooks';
-import { fetchBean, fetchBeanImages, fetchGrowRecords } from '../lib';
+import { fetchBean } from '../lib/firestore/beans';
+import { fetchGrowRecords } from '../lib/firestore/grow-records';
+import { queryKeys } from '../lib/queries/keys';
 
 interface HomeData {
-  records: GrowRecord[];
-  beansMap: Map<string, Bean>;
-  imagesMap: Map<string, BeanImage[]>;
+  beans: Bean[];
 }
 
 export function HomePage(): ReactElement {
@@ -21,23 +21,15 @@ export function HomePage(): ReactElement {
 
   const yearOptions = useMemo(() => buildYearOptions(), []);
 
-  const fetcher = useCallback(async (): Promise<HomeData> => {
-    const { records } = await fetchGrowRecords({ filters: { year: selectedYear } });
-
-    const uniqueBeanIds = [...new Set(records.map((r) => r.beanId))];
-
-    const [beans, images] = await Promise.all([
-      Promise.all(uniqueBeanIds.map((id) => fetchBean(id))),
-      Promise.all(uniqueBeanIds.map((id) => fetchBeanImages(id))),
-    ]);
-
-    const beansMap = new Map(beans.map((b) => [b.id, b]));
-    const imagesMap = new Map(uniqueBeanIds.map((id, i) => [id, images[i]!]));
-
-    return { records, beansMap, imagesMap };
-  }, [selectedYear]);
-
-  const { data, loading, error, refetch } = useQuery(fetcher, [selectedYear]);
+  const { data, isLoading, isError, error, refetch } = useQuery<HomeData>({
+    queryKey: queryKeys.home.byYear(selectedYear),
+    queryFn: async (): Promise<HomeData> => {
+      const { records } = await fetchGrowRecords({ filters: { year: selectedYear } });
+      const uniqueBeanIds = [...new Set(records.map((r) => r.beanId))];
+      const beans = await Promise.all(uniqueBeanIds.map((id) => fetchBean(id)));
+      return { beans };
+    },
+  });
 
   const title = selectedYear === new Date().getFullYear() ? 'Grown this year' : `Grown in ${selectedYear}`;
 
@@ -56,16 +48,16 @@ export function HomePage(): ReactElement {
         mb="lg"
       />
 
-      {loading && <LoadingState />}
-      {error && <ErrorState message={error.message} onRetry={refetch} />}
-      {!loading && !error && (!data || data.records.length === 0) && (
+      {isLoading && <LoadingState />}
+      {isError && <ErrorState message={error.message} onRetry={refetch} />}
+      {!isLoading && !isError && (!data || data.beans.length === 0) && (
         <EmptyState message="No beans grown this season." />
       )}
 
-      {!loading && !error && data && data.records.length > 0 && (
+      {!isLoading && !isError && data && data.beans.length > 0 && (
         <SimpleGrid cols={{ base: 1, xs: 2, sm: 3, md: 4 }} spacing="lg">
-          {[...data.beansMap.values()].map((bean) => (
-            <BeanCard key={bean.id} bean={bean} images={data.imagesMap.get(bean.id) ?? []} />
+          {data.beans.map((bean) => (
+            <BeanCard key={bean.id} bean={bean} />
           ))}
         </SimpleGrid>
       )}

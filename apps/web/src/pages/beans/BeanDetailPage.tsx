@@ -1,8 +1,8 @@
-import { useCallback } from 'react';
 import type { ReactElement } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import { Button, Group, Stack, Title } from '@mantine/core';
+import { useQueryClient } from '@tanstack/react-query';
 
 import type { GrowRecord } from '@fazole/common';
 import { IconEdit, IconPlus } from '@tabler/icons-react';
@@ -10,43 +10,30 @@ import { IconEdit, IconPlus } from '@tabler/icons-react';
 import { BeanGrowHistory, BeanImageGallery, BeanProperties } from '../../components/beans';
 import { ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
 import { useAuth } from '../../hooks/use-auth';
-import { useQuery } from '../../hooks/use-query';
-import { fetchBean } from '../../lib/firestore/beans';
-import { fetchGrowRecords } from '../../lib/firestore/grow-records';
-import { fetchBeanImages } from '../../lib/firestore/images';
-import { fetchSource } from '../../lib/firestore/sources';
+import { queryKeys } from '../../lib/queries/keys';
+import { useBean, useBeanImages } from '../../lib/queries/beans';
+import { useGrowRecords } from '../../lib/queries/grow-records';
+import { useSource } from '../../lib/queries/sources';
 
 export function BeanDetailPage(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const {
-    data: bean,
-    loading: beanLoading,
-    error: beanError,
-    refetch: refetchBean,
-  } = useQuery(useCallback(() => fetchBean(id!), [id]));
+  const { data: bean, isLoading, isError, error, refetch } = useBean(id ?? '');
+  const { data: images } = useBeanImages(id ?? '');
+  const { data: source } = useSource(bean?.sourceId);
+  const { data: growResult } = useGrowRecords({ filters: { beanId: id }, sortField: 'year', sortDir: 'desc' });
 
-  const { data: images } = useQuery(useCallback(() => fetchBeanImages(id!), [id]));
+  const invalidateGrow = (): void => {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.growRecords.all });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.seasons.all });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
+  };
 
-  const { data: source } = useQuery(
-    useCallback(async () => {
-      if (!bean?.sourceId) return null;
-      try {
-        return await fetchSource(bean.sourceId);
-      } catch {
-        return null;
-      }
-    }, [bean?.sourceId])
-  );
-
-  const { data: growResult, refetch: refetchGrow } = useQuery(
-    useCallback(() => fetchGrowRecords({ filters: { beanId: id }, sortField: 'year', sortDir: 'desc' }), [id])
-  );
-
-  if (beanLoading) return <LoadingState />;
-  if (beanError) return <ErrorState message={beanError.message} onRetry={refetchBean} />;
+  if (isLoading) return <LoadingState />;
+  if (isError) return <ErrorState message={error.message} onRetry={refetch} />;
   if (!bean) return <ErrorState message="Bean not found" />;
 
   return (
@@ -82,14 +69,14 @@ export function BeanDetailPage(): ReactElement {
 
         <BeanImageGallery images={images ?? []} />
 
-        <BeanProperties bean={bean} source={source} />
+        <BeanProperties bean={bean} source={source ?? null} />
 
         <Title order={3}>Grow History</Title>
         <BeanGrowHistory
           records={growResult?.records ?? []}
           isAdmin={isAdmin}
           onEdit={(record: GrowRecord) => navigate(`/grow-records/${record.id}/edit`)}
-          onDeleted={refetchGrow}
+          onDeleted={invalidateGrow}
         />
       </Stack>
     </>

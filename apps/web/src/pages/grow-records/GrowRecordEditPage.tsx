@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import type { ReactElement } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router';
 
@@ -7,9 +6,8 @@ import { Stack, Title } from '@mantine/core';
 import { GrowRecordForm } from '../../components/grow-records';
 import type { GrowRecordFormValues } from '../../components/grow-records/GrowRecordForm';
 import { ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
-import { useQuery } from '../../hooks/use-query';
-import { fetchAllBeans } from '../../lib/firestore/beans';
-import { createGrowRecord, fetchGrowRecord, updateGrowRecord } from '../../lib/firestore/grow-records';
+import { useBeans } from '../../lib/queries/beans';
+import { useCreateGrowRecord, useGrowRecord, useUpdateGrowRecord } from '../../lib/queries/grow-records';
 
 export function GrowRecordEditPage(): ReactElement {
   const { id } = useParams<{ id: string }>();
@@ -18,21 +16,13 @@ export function GrowRecordEditPage(): ReactElement {
   const isNew = !id || id === 'new';
   const defaultBeanId = searchParams.get('beanId');
 
-  const {
-    data: record,
-    loading: recordLoading,
-    error: recordError,
-  } = useQuery(
-    useCallback(async () => {
-      if (isNew) return null;
-      return fetchGrowRecord(id);
-    }, [id, isNew])
-  );
-
-  const { data: beans } = useQuery(useCallback(() => fetchAllBeans(), []));
+  const { data: record, isLoading: recordLoading, isError: recordError, error } = useGrowRecord(isNew ? '' : id!);
+  const { data: beans } = useBeans();
+  const createMutation = useCreateGrowRecord();
+  const updateMutation = useUpdateGrowRecord();
 
   if (!isNew && recordLoading) return <LoadingState />;
-  if (!isNew && recordError) return <ErrorState message={recordError.message} />;
+  if (!isNew && recordError) return <ErrorState message={error.message} />;
 
   async function handleSave(values: GrowRecordFormValues): Promise<string | void> {
     const data = {
@@ -47,9 +37,9 @@ export function GrowRecordEditPage(): ReactElement {
     };
 
     if (isNew) {
-      return createGrowRecord(data);
+      return createMutation.mutateAsync(data);
     }
-    await updateGrowRecord(id, data);
+    await updateMutation.mutateAsync({ id: id!, data });
   }
 
   const breadcrumbItems = isNew

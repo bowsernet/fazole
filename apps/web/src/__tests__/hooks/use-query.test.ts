@@ -40,4 +40,20 @@ describe('useQuery', () => {
     await waitFor(() => expect(result.current.data).toBe('v2'));
     expect(fetcher).toHaveBeenCalledTimes(2);
   });
+
+  it('should re-run when the fetcher identity changes', async () => {
+    const first = vi.fn().mockResolvedValue('empty');
+    const second = vi.fn().mockResolvedValue('loaded');
+
+    const { result, rerender } = renderHook(({ fetcher }) => useQuery(fetcher), {
+      initialProps: { fetcher: first },
+    });
+
+    await waitFor(() => expect(result.current.data).toBe('empty'));
+
+    rerender({ fetcher: second });
+
+    await waitFor(() => expect(result.current.data).toBe('loaded'));
+    expect(second).toHaveBeenCalledTimes(1);
+  });
 });

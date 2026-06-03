@@ -38,7 +38,7 @@ export function useQuery<T>(fetcher: () => Promise<T>, deps: unknown[] = []): Qu
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trigger, ...deps]);
+  }, [trigger, fetcher, ...deps]);
 
   return { data, loading, error, refetch };
 }

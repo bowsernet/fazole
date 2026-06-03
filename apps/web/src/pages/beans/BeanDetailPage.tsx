@@ -2,7 +2,6 @@ import type { ReactElement } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 
 import { Button, Group, Stack, Title } from '@mantine/core';
-import { useQueryClient } from '@tanstack/react-query';
 
 import type { GrowRecord } from '@fazole/common';
 import { IconEdit, IconPlus } from '@tabler/icons-react';
@@ -10,27 +9,20 @@ import { IconEdit, IconPlus } from '@tabler/icons-react';
 import { BeanGrowHistory, BeanImageGallery, BeanProperties } from '../../components/beans';
 import { ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
 import { useAuth } from '../../hooks/use-auth';
-import { queryKeys } from '../../lib/queries/keys';
 import { useBean, useBeanImages } from '../../lib/queries/beans';
-import { useGrowRecords } from '../../lib/queries/grow-records';
+import { useGrowRecords, useInvalidateGrowRecords } from '../../lib/queries/grow-records';
 import { useSource } from '../../lib/queries/sources';
 
 export function BeanDetailPage(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
+  const invalidateGrow = useInvalidateGrowRecords();
 
   const { data: bean, isLoading, isError, error, refetch } = useBean(id ?? '');
   const { data: images } = useBeanImages(id ?? '');
   const { data: source } = useSource(bean?.sourceId);
   const { data: growResult } = useGrowRecords({ filters: { beanId: id }, sortField: 'year', sortDir: 'desc' });
-
-  const invalidateGrow = (): void => {
-    void queryClient.invalidateQueries({ queryKey: queryKeys.growRecords.all });
-    void queryClient.invalidateQueries({ queryKey: queryKeys.seasons.all });
-    void queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
-  };
 
   if (isLoading) return <LoadingState />;
   if (isError) return <ErrorState message={error.message} onRetry={refetch} />;

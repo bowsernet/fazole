@@ -8,15 +8,13 @@ import { useMediaQuery } from '@mantine/hooks';
 import type { Bean } from '@fazole/common';
 import { PAGINATION_PAGE_SIZE } from '@fazole/config';
 import { IconPlus } from '@tabler/icons-react';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { GrowRecordFilters, GrowRecordTable } from '../../components/grow-records';
 import type { GrowRecordFiltersState, SortState } from '../../components/grow-records';
 import { EmptyState, ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
 import { useAuth } from '../../hooks/use-auth';
 import { useBeans } from '../../lib/queries/beans';
-import { useGrowRecords } from '../../lib/queries/grow-records';
-import { queryKeys } from '../../lib/queries/keys';
+import { useGrowRecords, useInvalidateGrowRecords } from '../../lib/queries/grow-records';
 
 export function GrowRecordListPage(): ReactElement {
   const { isAdmin } = useAuth();
@@ -46,13 +44,7 @@ export function GrowRecordListPage(): ReactElement {
     useGrowRecords(fetchOptions);
 
   const { data: beans } = useBeans();
-  const queryClient = useQueryClient();
-
-  const invalidateGrow = (): void => {
-    void queryClient.invalidateQueries({ queryKey: queryKeys.growRecords.all });
-    void queryClient.invalidateQueries({ queryKey: queryKeys.seasons.all });
-    void queryClient.invalidateQueries({ queryKey: queryKeys.home.all });
-  };
+  const invalidateGrow = useInvalidateGrowRecords();
 
   const beansMap = useMemo(() => {
     if (!beans) return {} as Record<string, Bean>;

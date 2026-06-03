@@ -27,7 +27,7 @@ export function useGrowRecord(id: string): UseQueryResult<GrowRecord> {
   return useQuery({ queryKey: queryKeys.growRecords.detail(id), queryFn: () => fetchGrowRecord(id), enabled: !!id });
 }
 
-function useInvalidateGrowRecords(): () => void {
+export function useInvalidateGrowRecords(): () => void {
   const qc = useQueryClient();
   return () => {
     void qc.invalidateQueries({ queryKey: queryKeys.growRecords.all });

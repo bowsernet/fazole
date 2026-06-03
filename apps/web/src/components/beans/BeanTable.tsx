@@ -1,10 +1,11 @@
 import type { ReactElement } from 'react';
-import { useNavigate } from 'react-router';
 
-import { Badge, Group, Image, Table, Text, UnstyledButton } from '@mantine/core';
+import { Group, Table, Text, UnstyledButton } from '@mantine/core';
 
-import type { Bean, BeanImage } from '@fazole/common';
+import type { Bean } from '@fazole/common';
 import { IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
+
+import { BeanTableRow } from './BeanTableRow';
 
 export interface SortState {
   field: string;
@@ -13,14 +14,11 @@ export interface SortState {
 
 interface BeanTableProps {
   beans: Bean[];
-  imagesMap: Record<string, BeanImage[]>;
   sort: SortState;
   onSort: (field: string) => void;
 }
 
-export function BeanTable({ beans, imagesMap, sort, onSort }: BeanTableProps): ReactElement {
-  const navigate = useNavigate();
-
+export function BeanTable({ beans, sort, onSort }: BeanTableProps): ReactElement {
   return (
     <Table.ScrollContainer minWidth={700}>
       <Table striped highlightOnHover>
@@ -40,36 +38,9 @@ export function BeanTable({ beans, imagesMap, sort, onSort }: BeanTableProps): R
           </Table.Tr>
         </Table.Thead>
         <Table.Tbody>
-          {beans.map((bean) => {
-            const images = imagesMap[bean.id] ?? [];
-            const thumbUrl = getThumbUrl(images);
-            const lastYear = bean.yearsGrown.length > 0 ? Math.max(...bean.yearsGrown) : null;
-
-            return (
-              <Table.Tr key={bean.id} style={{ cursor: 'pointer' }} onClick={() => navigate(`/beans/${bean.id}`)}>
-                <Table.Td>
-                  <Image
-                    src={thumbUrl}
-                    w={40}
-                    h={40}
-                    radius="sm"
-                    fallbackSrc="https://placehold.co/160x160?text=-"
-                    alt=""
-                  />
-                </Table.Td>
-                <Table.Td>
-                  <Text fw={500}>{bean.name}</Text>
-                </Table.Td>
-                <Table.Td>{bean.podType}</Table.Td>
-                <Table.Td>{bean.plantType}</Table.Td>
-                <Table.Td>{bean.beanSize ?? '-'}</Table.Td>
-                <Table.Td>
-                  <BeanColorDisplay bean={bean} />
-                </Table.Td>
-                <Table.Td>{lastYear ?? '-'}</Table.Td>
-              </Table.Tr>
-            );
-          })}
+          {beans.map((bean) => (
+            <BeanTableRow key={bean.id} bean={bean} />
+          ))}
         </Table.Tbody>
       </Table>
     </Table.ScrollContainer>
@@ -96,39 +67,4 @@ function SortableHeader({ field, label, sort, onSort }: SortableHeaderProps): Re
       </Group>
     </UnstyledButton>
   );
-}
-
-function BeanColorDisplay({ bean }: { bean: Bean }): ReactElement {
-  const colors = [bean.beanColor1, bean.beanColor2, bean.beanColor3].filter(Boolean);
-  if (colors.length === 0) return <Text size="sm">-</Text>;
-
-  return (
-    <Group gap={4}>
-      {colors.map((color, i) => (
-        <Badge key={i} size="xs" color={mapBeanColorToMantine(color!)}>
-          {color}
-        </Badge>
-      ))}
-    </Group>
-  );
-}
-
-function mapBeanColorToMantine(color: string): string {
-  const map: Record<string, string> = {
-    white: 'gray',
-    yellow: 'yellow',
-    brown: 'orange',
-    pink: 'pink',
-    red: 'red',
-    purple: 'grape',
-    black: 'dark',
-  };
-  return map[color] ?? 'gray';
-}
-
-function getThumbUrl(images: BeanImage[]): string | undefined {
-  const closeup = images.find((img) => img.type === 'closeup');
-  const source = images.find((img) => img.type === 'source');
-  const preferred = closeup ?? source ?? images[0];
-  return preferred?.urls.thumb_webp ?? undefined;
 }

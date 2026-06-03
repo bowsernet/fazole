@@ -1,101 +1,43 @@
-import { useCallback, useMemo, useState } from 'react';
 import type { ReactElement } from 'react';
 import { Link } from 'react-router';
 
-import { Button, Group, Pagination, SegmentedControl, SimpleGrid, Stack, Title } from '@mantine/core';
+import { Button, Group, SegmentedControl, SimpleGrid, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 
-import type { BeanColor, BeanImage, BeanSpecies, PlantType, PodType } from '@fazole/common';
-import { PAGINATION_PAGE_SIZE } from '@fazole/config';
+import type { BeanColor, BeanSpecies, PlantType, PodType } from '@fazole/common';
 import { IconPlus } from '@tabler/icons-react';
 
 import { BeanCard, BeanFilters, BeanTable } from '../../components/beans';
-import type { BeanFiltersState, SortState } from '../../components/beans';
 import { EmptyState, ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
 import { useAuth } from '../../hooks/use-auth';
-import { useQuery } from '../../hooks/use-query';
 import { selectBeans } from '../../lib/beans-select';
-import { fetchAllBeans } from '../../lib/firestore/beans';
-import { fetchBeanImages } from '../../lib/firestore/images';
-import { fetchSources } from '../../lib/firestore/sources';
+import { useBeans } from '../../lib/queries/beans';
+import { useSources } from '../../lib/queries/sources';
+import { useBeanListParams } from './use-bean-list-params';
 
 export function BeanListPage(): ReactElement {
   const { isAdmin } = useAuth();
-  const [viewMode, setViewMode] = useState<string>('card');
-  const [page, setPage] = useState(1);
-  const [sort, setSort] = useState<SortState>({ field: 'name', dir: 'asc' });
-  const [filters, setFilters] = useState<BeanFiltersState>({
-    species: null,
-    podType: null,
-    plantType: null,
-    yearGrown: null,
-    beanColor: null,
-    sourceId: null,
+  const isLarge = useMediaQuery('(min-width: 75em)');
+  const { filters, sort, view, loaded, setFilters, setSort, setView, loadMore } = useBeanListParams();
+
+  const { data: allBeans, isLoading, isError, error, refetch } = useBeans();
+  const { data: sources } = useSources();
+
+  const { beans, hasMore } = selectBeans(allBeans ?? [], {
+    filters: {
+      species: (filters.species as BeanSpecies) ?? undefined,
+      podType: (filters.podType as PodType) ?? undefined,
+      plantType: (filters.plantType as PlantType) ?? undefined,
+      yearGrown: filters.yearGrown ? Number(filters.yearGrown) : undefined,
+      beanColor: (filters.beanColor as BeanColor) ?? undefined,
+      sourceId: filters.sourceId ?? undefined,
+    },
+    sortField: sort.field,
+    sortDir: sort.dir,
+    loaded,
   });
 
-  const isLarge = useMediaQuery('(min-width: 75em)');
-
-  const {
-    data: allBeans,
-    loading,
-    error,
-    refetch,
-  } = useQuery(useCallback(() => fetchAllBeans(), []));
-
-  const { beans, total } = useMemo(
-    () =>
-      selectBeans(allBeans ?? [], {
-        filters: {
-          species: (filters.species as BeanSpecies) ?? undefined,
-          podType: (filters.podType as PodType) ?? undefined,
-          plantType: (filters.plantType as PlantType) ?? undefined,
-          yearGrown: filters.yearGrown ? Number(filters.yearGrown) : undefined,
-          beanColor: (filters.beanColor as BeanColor) ?? undefined,
-          sourceId: filters.sourceId ?? undefined,
-        },
-        sortField: sort.field,
-        sortDir: sort.dir,
-        page,
-      }),
-    [allBeans, filters, sort, page]
-  );
-
-  const { data: sources } = useQuery(useCallback(() => fetchSources(), []));
-
-  const { data: imagesMap } = useQuery(
-    useCallback(async () => {
-      if (!beans.length) return {} as Record<string, BeanImage[]>;
-      const entries = await Promise.all(
-        beans.map(async (bean) => {
-          const images = await fetchBeanImages(bean.id);
-          return [bean.id, images] as const;
-        })
-      );
-      return Object.fromEntries(entries) as Record<string, BeanImage[]>;
-    }, [beans])
-  );
-
-  const yearOptions = useMemo(() => {
-    const years = new Set<number>();
-    (allBeans ?? []).forEach((b) => b.yearsGrown.forEach((y) => years.add(y)));
-    return Array.from(years)
-      .sort((a, b) => b - a)
-      .map(String);
-  }, [allBeans]);
-
-  const totalPages = Math.ceil(total / PAGINATION_PAGE_SIZE);
-
-  function handleSort(field: string): void {
-    setSort((prev) =>
-      prev.field === field ? { field, dir: prev.dir === 'asc' ? 'desc' : 'asc' } : { field, dir: 'asc' }
-    );
-    setPage(1);
-  }
-
-  function handleFiltersChange(newFilters: BeanFiltersState): void {
-    setFilters(newFilters);
-    setPage(1);
-  }
+  const yearOptions = buildYearOptions(allBeans);
 
   return (
     <>
@@ -106,8 +48,8 @@ export function BeanListPage(): ReactElement {
           <Title order={1}>Beans</Title>
           <Group>
             <SegmentedControl
-              value={viewMode}
-              onChange={setViewMode}
+              value={view}
+              onChange={setView}
               data={[
                 { label: 'Cards', value: 'card' },
                 { label: 'Table', value: 'table' },
@@ -123,44 +65,36 @@ export function BeanListPage(): ReactElement {
         </Group>
 
         {!isLarge && (
-          <BeanFilters
-            filters={filters}
-            onChange={handleFiltersChange}
-            sources={sources ?? []}
-            yearOptions={yearOptions}
-          />
+          <BeanFilters filters={filters} onChange={setFilters} sources={sources ?? []} yearOptions={yearOptions} />
         )}
 
         <Group align="flex-start" wrap="nowrap" gap="lg">
           {isLarge && (
-            <BeanFilters
-              filters={filters}
-              onChange={handleFiltersChange}
-              sources={sources ?? []}
-              yearOptions={yearOptions}
-            />
+            <BeanFilters filters={filters} onChange={setFilters} sources={sources ?? []} yearOptions={yearOptions} />
           )}
 
           <Stack gap="md" style={{ flex: 1, minWidth: 0 }}>
-            {loading && <LoadingState />}
-            {error && <ErrorState message={error.message} onRetry={refetch} />}
-            {!loading && !error && beans.length === 0 && <EmptyState message="No beans found." />}
+            {isLoading && <LoadingState />}
+            {isError && <ErrorState message={error.message} onRetry={refetch} />}
+            {!isLoading && !isError && beans.length === 0 && <EmptyState message="No beans found." />}
 
-            {!loading && !error && beans.length > 0 && (
+            {!isLoading && !isError && beans.length > 0 && (
               <>
-                {viewMode === 'card' ? (
+                {view === 'card' ? (
                   <SimpleGrid cols={{ base: 1, xs: 2, sm: 3, lg: 3 }} spacing="md">
                     {beans.map((bean) => (
-                      <BeanCard key={bean.id} bean={bean} images={imagesMap?.[bean.id] ?? []} />
+                      <BeanCard key={bean.id} bean={bean} />
                     ))}
                   </SimpleGrid>
                 ) : (
-                  <BeanTable beans={beans} imagesMap={imagesMap ?? {}} sort={sort} onSort={handleSort} />
+                  <BeanTable beans={beans} sort={sort} onSort={setSort} />
                 )}
 
-                {totalPages > 1 && (
+                {hasMore && (
                   <Group justify="center">
-                    <Pagination value={page} onChange={setPage} total={totalPages} />
+                    <Button variant="default" onClick={loadMore}>
+                      Load more
+                    </Button>
                   </Group>
                 )}
               </>
@@ -170,4 +104,12 @@ export function BeanListPage(): ReactElement {
       </Stack>
     </>
   );
+}
+
+function buildYearOptions(allBeans: { yearsGrown: number[] }[] | undefined): string[] {
+  const years = new Set<number>();
+  (allBeans ?? []).forEach((b) => b.yearsGrown.forEach((y) => years.add(y)));
+  return Array.from(years)
+    .sort((a, b) => b - a)
+    .map(String);
 }

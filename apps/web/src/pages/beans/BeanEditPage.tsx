@@ -1,46 +1,33 @@
-import { useCallback } from 'react';
 import type { ReactElement } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 import { Stack, Title } from '@mantine/core';
+import { useQueryClient } from '@tanstack/react-query';
 
 import type { BeanColor, BeanSpecies, PlantType, PodType } from '@fazole/common';
 
 import { BeanForm, BeanImageManager } from '../../components/beans';
 import type { BeanFormValues } from '../../components/beans/BeanForm';
 import { ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
-import { useQuery } from '../../hooks/use-query';
-import { createBean, fetchBean, updateBean } from '../../lib/firestore/beans';
-import { fetchBeanImages } from '../../lib/firestore/images';
-import { fetchSources } from '../../lib/firestore/sources';
+import { useBean, useBeanImages, useCreateBean, useUpdateBean } from '../../lib/queries/beans';
+import { queryKeys } from '../../lib/queries/keys';
+import { useSources } from '../../lib/queries/sources';
 
 export function BeanEditPage(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const isNew = !id || id === 'new';
+  const beanId = isNew ? '' : id;
 
-  const {
-    data: bean,
-    loading: beanLoading,
-    error: beanError,
-  } = useQuery(
-    useCallback(async () => {
-      if (isNew) return null;
-      return fetchBean(id);
-    }, [id, isNew])
-  );
-
-  const { data: sources } = useQuery(useCallback(() => fetchSources(), []));
-
-  const { data: images, refetch: refetchImages } = useQuery(
-    useCallback(async () => {
-      if (isNew) return [];
-      return fetchBeanImages(id);
-    }, [id, isNew])
-  );
+  const { data: bean, isLoading: beanLoading, isError: beanError, error } = useBean(beanId);
+  const { data: sources } = useSources();
+  const { data: images } = useBeanImages(beanId);
+  const createMutation = useCreateBean();
+  const updateMutation = useUpdateBean();
 
   if (!isNew && beanLoading) return <LoadingState />;
-  if (!isNew && beanError) return <ErrorState message={beanError.message} />;
+  if (!isNew && beanError) return <ErrorState message={error.message} />;
 
   async function handleSave(values: BeanFormValues): Promise<string | void> {
     const data = {
@@ -60,10 +47,14 @@ export function BeanEditPage(): ReactElement {
     };
 
     if (isNew) {
-      return createBean(data);
+      return createMutation.mutateAsync(data);
     }
-    await updateBean(id, data);
+    await updateMutation.mutateAsync({ id: beanId, data });
   }
+
+  const invalidateImages = (): void => {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.beans.images(beanId) });
+  };
 
   const breadcrumbItems = isNew
     ? [{ label: 'Home', href: '/' }, { label: 'Beans', href: '/beans' }, { label: 'New' }]
@@ -88,7 +79,7 @@ export function BeanEditPage(): ReactElement {
           onCancel={() => navigate(isNew ? '/beans' : `/beans/${id}`)}
         />
 
-        {!isNew && id && <BeanImageManager beanId={id} images={images ?? []} onChanged={refetchImages} />}
+        {!isNew && id && <BeanImageManager beanId={id} images={images ?? []} onChanged={invalidateImages} />}
       </Stack>
     </>
   );

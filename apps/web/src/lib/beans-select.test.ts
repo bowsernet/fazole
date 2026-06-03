@@ -60,20 +60,28 @@ describe('sortBeans', () => {
 });
 
 describe('selectBeans', () => {
-  it('filters, sorts, and reports total before pagination', () => {
+  it('filters, sorts, and reports total before slicing', () => {
     const result = selectBeans(beans, { filters: { sourceId: 's1' }, sortField: 'name', sortDir: 'asc' });
     expect(result.total).toBe(2);
     expect(result.beans.map((b) => b.id)).toEqual(['3', '1']);
   });
 
-  it('paginates by page and pageSize', () => {
-    const result = selectBeans(beans, { sortField: 'name', sortDir: 'asc', page: 2, pageSize: 2 });
+  it('returns a cumulative slice of loaded x pageSize', () => {
+    const result = selectBeans(beans, { sortField: 'name', sortDir: 'asc', loaded: 1, pageSize: 2 });
     expect(result.total).toBe(3);
-    expect(result.beans.map((b) => b.name)).toEqual(['Cranberry']);
+    expect(result.beans.map((b) => b.name)).toEqual(['Apple', 'Borlotti']);
+    expect(result.hasMore).toBe(true);
   });
 
-  it('defaults to name ascending on page 1', () => {
+  it('grows the slice as loaded increases', () => {
+    const result = selectBeans(beans, { sortField: 'name', sortDir: 'asc', loaded: 2, pageSize: 2 });
+    expect(result.beans.map((b) => b.name)).toEqual(['Apple', 'Borlotti', 'Cranberry']);
+    expect(result.hasMore).toBe(false);
+  });
+
+  it('defaults to loaded=1, name ascending', () => {
     const result = selectBeans(beans);
     expect(result.beans.map((b) => b.name)).toEqual(['Apple', 'Borlotti', 'Cranberry']);
+    expect(result.hasMore).toBe(false);
   });
 });

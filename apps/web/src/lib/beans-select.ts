@@ -14,17 +14,20 @@ export interface SelectBeansOptions {
   filters?: BeanFilters;
   sortField?: string;
   sortDir?: 'asc' | 'desc';
-  page?: number;
+  loaded?: number;
   pageSize?: number;
 }
 
-export function selectBeans(beans: Bean[], options: SelectBeansOptions = {}): { beans: Bean[]; total: number } {
-  const { filters = {}, sortField = 'name', sortDir = 'asc', page = 1, pageSize = PAGINATION_PAGE_SIZE } = options;
+export function selectBeans(
+  beans: Bean[],
+  options: SelectBeansOptions = {}
+): { beans: Bean[]; total: number; hasMore: boolean } {
+  const { filters = {}, sortField = 'name', sortDir = 'asc', loaded = 1, pageSize = PAGINATION_PAGE_SIZE } = options;
 
   const sorted = sortBeans(filterBeans(beans, filters), sortField, sortDir);
-  const start = (page - 1) * pageSize;
+  const shown = sorted.slice(0, loaded * pageSize);
 
-  return { beans: sorted.slice(start, start + pageSize), total: sorted.length };
+  return { beans: shown, total: sorted.length, hasMore: shown.length < sorted.length };
 }
 
 export function filterBeans(beans: Bean[], filters: BeanFilters): Bean[] {

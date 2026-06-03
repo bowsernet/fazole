@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { ReactElement } from 'react';
 import { Link } from 'react-router';
 
@@ -13,9 +13,8 @@ import { GrowRecordFilters, GrowRecordTable } from '../../components/grow-record
 import type { GrowRecordFiltersState, SortState } from '../../components/grow-records';
 import { EmptyState, ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
 import { useAuth } from '../../hooks/use-auth';
-import { useQuery } from '../../hooks/use-query';
-import { fetchAllBeans } from '../../lib/firestore/beans';
-import { fetchGrowRecords } from '../../lib/firestore/grow-records';
+import { useBeans } from '../../lib/queries/beans';
+import { useGrowRecords, useInvalidateGrowRecords } from '../../lib/queries/grow-records';
 
 export function GrowRecordListPage(): ReactElement {
   const { isAdmin } = useAuth();
@@ -41,14 +40,11 @@ export function GrowRecordListPage(): ReactElement {
     [filters, sort, page]
   );
 
-  const {
-    data: recordsResult,
-    loading,
-    error,
-    refetch,
-  } = useQuery(useCallback(() => fetchGrowRecords(fetchOptions), [fetchOptions]));
+  const { data: recordsResult, isLoading: loading, isError: error, error: errorObj, refetch } =
+    useGrowRecords(fetchOptions);
 
-  const { data: beans } = useQuery(useCallback(() => fetchAllBeans(), []));
+  const { data: beans } = useBeans();
+  const invalidateGrow = useInvalidateGrowRecords();
 
   const beansMap = useMemo(() => {
     if (!beans) return {} as Record<string, Bean>;
@@ -109,7 +105,7 @@ export function GrowRecordListPage(): ReactElement {
 
           <Stack gap="md" style={{ flex: 1, minWidth: 0 }}>
             {loading && <LoadingState />}
-            {error && <ErrorState message={error.message} onRetry={refetch} />}
+            {error && <ErrorState message={errorObj.message} onRetry={refetch} />}
             {!loading && !error && recordsResult?.records.length === 0 && (
               <EmptyState message="No grow records found." />
             )}
@@ -122,7 +118,7 @@ export function GrowRecordListPage(): ReactElement {
                   sort={sort}
                   onSort={handleSort}
                   isAdmin={isAdmin}
-                  onDeleted={refetch}
+                  onDeleted={invalidateGrow}
                 />
 
                 {totalPages > 1 && (

@@ -1,5 +1,6 @@
 export { BeanCard } from './BeanCard';
 export { BeanTable } from './BeanTable';
+export { BeanTableRow } from './BeanTableRow';
 export type { SortState } from './BeanTable';
 export { BeanFilters } from './BeanFilters';
 export type { BeanFiltersState } from './BeanFilters';

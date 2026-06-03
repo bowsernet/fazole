@@ -5,13 +5,15 @@ import { Badge, Card, Group, Image, Text } from '@mantine/core';
 
 import type { Bean, BeanImage } from '@fazole/common';
 
+import { useBeanImages } from '../../lib/queries/beans';
+
 interface BeanCardProps {
   bean: Bean;
-  images: BeanImage[];
 }
 
-export function BeanCard({ bean, images }: BeanCardProps): ReactElement {
-  const previewUrl = getPreviewUrl(images);
+export function BeanCard({ bean }: BeanCardProps): ReactElement {
+  const { data: images } = useBeanImages(bean.id);
+  const previewUrl = getPreviewUrl(images ?? []);
   const lastYear = bean.yearsGrown.length > 0 ? Math.max(...bean.yearsGrown) : null;
 
   return (

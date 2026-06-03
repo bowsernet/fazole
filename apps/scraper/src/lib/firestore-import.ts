@@ -47,6 +47,7 @@ export async function upsertBean(bean: CsvBean, fields: LlmFields, sourceId: str
   if (!snap.exists) {
     data.createdAt = now;
     data.yearsGrown = [];
+    data.deletedAt = null;
   } else {
     // Clear soft-delete markers if the bean has reappeared.
     data.deletedInSource = FieldValue.delete();

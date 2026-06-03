@@ -34,7 +34,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
           <AuthProvider>
             <Notifications />
             <App />
-            <ReactQueryDevtools initialIsOpen={false} />
+            {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}
           </AuthProvider>
         </QueryClientProvider>
       </DatesProvider>

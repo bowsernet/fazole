@@ -7,7 +7,13 @@ import sharp from 'sharp';
 
 const ORIGINAL_PATH_REGEX = /^beans\/([^/]+)\/images\/([^/_]+)\.[^.]+$/;
 
-export const onImageUpload = onObjectFinalized({ region: FIREBASE_REGION }, async (event) => {
+// sharp generates 6 variants per image (3 presets x webp+avif); AVIF encoding in
+// particular peaks well above the 256 MiB Gen2 default, OOM-killing the container
+// before the paths/urls write-back. 1 GiB (and the 1 vCPU it grants) covers it;
+// concurrency 1 keeps a heavy encode from sharing an instance's memory with another.
+export const onImageUpload = onObjectFinalized(
+  { region: FIREBASE_REGION, memory: '1GiB', concurrency: 1, timeoutSeconds: 120 },
+  async (event) => {
   const filePath = event.data.name;
   if (!filePath) return;
 

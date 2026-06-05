@@ -49,9 +49,12 @@ export async function upsertBean(bean: CsvBean, fields: LlmFields, sourceId: str
     data.yearsGrown = [];
     data.deletedAt = null;
   } else {
-    // Clear soft-delete markers if the bean has reappeared.
+    // Clear soft-delete markers if the bean has reappeared. deletedAt is reset
+    // to null (not deleted) so the field always exists — the web list query
+    // filters with where('deletedAt', '==', null), which never matches a
+    // missing field.
     data.deletedInSource = FieldValue.delete();
-    data.deletedAt = FieldValue.delete();
+    data.deletedAt = null;
   }
 
   await ref.set(data, { merge: true });

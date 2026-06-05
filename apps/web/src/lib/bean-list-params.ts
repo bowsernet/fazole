@@ -1,3 +1,5 @@
+import { type BeanColor, isValidBeanColor } from '@fazole/common';
+
 import type { BeanFiltersState, SortState } from '../components/beans';
 
 export interface BeanListState {
@@ -9,18 +11,22 @@ export interface BeanListState {
 
 const DEFAULT_SORT: SortState = { field: 'name', dir: 'asc' };
 
-const FILTER_PARAMS: Record<keyof BeanFiltersState, string> = {
+type StringFilterKey = Exclude<keyof BeanFiltersState, 'beanColors'>;
+
+const FILTER_PARAMS: Record<StringFilterKey, string> = {
   species: 'species',
   podType: 'pod',
   plantType: 'plant',
   yearGrown: 'year',
-  beanColor: 'color',
   sourceId: 'source',
+  grown: 'grown',
 };
 
+const COLOR_PARAM = 'color';
+
 export function parseParams(params: URLSearchParams): BeanListState {
-  const filters = {} as BeanFiltersState;
-  (Object.keys(FILTER_PARAMS) as (keyof BeanFiltersState)[]).forEach((key) => {
+  const filters = { beanColors: parseColors(params.get(COLOR_PARAM)) } as BeanFiltersState;
+  (Object.keys(FILTER_PARAMS) as StringFilterKey[]).forEach((key) => {
     filters[key] = params.get(FILTER_PARAMS[key]);
   });
 
@@ -35,10 +41,12 @@ export function parseParams(params: URLSearchParams): BeanListState {
 export function toSearchParams(state: BeanListState): URLSearchParams {
   const params = new URLSearchParams();
 
-  (Object.keys(FILTER_PARAMS) as (keyof BeanFiltersState)[]).forEach((key) => {
+  (Object.keys(FILTER_PARAMS) as StringFilterKey[]).forEach((key) => {
     const value = state.filters[key];
     if (value) params.set(FILTER_PARAMS[key], value);
   });
+
+  if (state.filters.beanColors.length > 0) params.set(COLOR_PARAM, state.filters.beanColors.join(','));
 
   if (state.sort.field !== DEFAULT_SORT.field || state.sort.dir !== DEFAULT_SORT.dir) {
     params.set('sort', `${state.sort.field}.${state.sort.dir}`);
@@ -47,6 +55,11 @@ export function toSearchParams(state: BeanListState): URLSearchParams {
   if (state.loaded > 1) params.set('loaded', String(state.loaded));
 
   return params;
+}
+
+function parseColors(raw: string | null): BeanColor[] {
+  if (!raw) return [];
+  return raw.split(',').filter(isValidBeanColor);
 }
 
 function parseSort(raw: string | null): SortState {

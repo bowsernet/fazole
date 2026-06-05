@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { BEAN_COLORS, isValidBeanColor } from '@fazole/common';
 
 import type { LlmFields, ParsedBean } from './types';
 
@@ -15,7 +16,7 @@ const TOOL: Anthropic.Tool = {
       podType: { type: 'string', enum: ['snap', 'dry'] },
       beanColors: {
         type: 'array',
-        items: { type: 'string', enum: ['white', 'yellow', 'brown', 'pink', 'red', 'purple', 'black'] },
+        items: { type: 'string', enum: [...BEAN_COLORS] },
       },
       notes: { type: 'string', description: 'Extraction caveats or low-confidence flags.' },
     },
@@ -34,7 +35,7 @@ function buildPrompt(bean: ParsedBean): string {
     'Guidance on where to look:',
     '- plantType / podType usually appear as a leading token like "Bush/Dry", "Pole lima", "Runner/Snap".',
     '- species: "lima" in the text means lima; only use "scarlet" for an explicit Phaseolus coccineus / scarlet runner — never infer it from the word "runner" alone (this site calls climbing common beans "runner").',
-    '- beanColors: infer the seed colors from the description and the image alt text. Map to the closest of: white, yellow, brown, pink, red, purple, black. List 1-3, most dominant first.',
+    `- beanColors: infer the seed colors from the description and the image alt text. Map to the closest of: ${BEAN_COLORS.join(', ')}. List 1-3, most dominant first.`,
     'If a field is genuinely unclear, make your best guess and explain in notes.',
   ].join('\n');
 }
@@ -64,7 +65,6 @@ export async function extractLlm(client: Anthropic, bean: ParsedBean, retries = 
 const SPECIES = ['vulgaris', 'lima', 'scarlet'];
 const PLANT_TYPES = ['bush', 'semi', 'runner'];
 const POD_TYPES = ['snap', 'dry'];
-const COLORS = ['white', 'yellow', 'brown', 'pink', 'red', 'purple', 'black'];
 
 function parseLlmFields(input: unknown, name: string): LlmFields {
   if (typeof input !== 'object' || input === null) {
@@ -75,7 +75,7 @@ function parseLlmFields(input: unknown, name: string): LlmFields {
   if (!PLANT_TYPES.includes(o.plantType as string))
     throw new Error(`bad plantType for "${name}": ${String(o.plantType)}`);
   if (!POD_TYPES.includes(o.podType as string)) throw new Error(`bad podType for "${name}": ${String(o.podType)}`);
-  if (!Array.isArray(o.beanColors) || !o.beanColors.every((c) => COLORS.includes(c as string))) {
+  if (!Array.isArray(o.beanColors) || !o.beanColors.every((c) => isValidBeanColor(c as string))) {
     throw new Error(`bad beanColors for "${name}": ${String(o.beanColors)}`);
   }
   return {

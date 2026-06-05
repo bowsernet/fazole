@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { BEAN_COLORS } from '@fazole/common';
 import { readFileSync } from 'node:fs';
 import { extname } from 'node:path';
 
@@ -19,7 +20,7 @@ const TOOL: Anthropic.Tool = {
       podType: { type: 'string', enum: ['snap', 'dry'] },
       beanColors: {
         type: 'array',
-        items: { type: 'string', enum: ['white', 'yellow', 'brown', 'pink', 'red', 'purple', 'black', 'blue'] },
+        items: { type: 'string', enum: [...BEAN_COLORS] },
       },
       notes: { type: 'string', description: 'Extraction caveats or low-confidence flags.' },
     },
@@ -45,7 +46,7 @@ function prompt(bean: CsvBean): string {
     'Guidance:',
     '- plantType / podType usually appear as a leading token like "Bush/Dry", "Pole lima", "Runner/Snap".',
     '- species: "lima" in the text means lima; only use "scarlet" for an explicit Phaseolus coccineus / scarlet runner — never infer it from the word "runner" alone.',
-    '- beanColors: read the SEED colors primarily from the PHOTO (the text/name is a weak hint). Map to the closest of: white, yellow, brown, pink, red, purple, black, blue. List 1-3, most dominant first.',
+    `- beanColors: read the SEED colors primarily from the PHOTO (the text/name is a weak hint). Map to the closest of: ${BEAN_COLORS.join(', ')}. List 1-3, most dominant first.`,
   ].join('\n');
 }
 

@@ -9,6 +9,7 @@ export const BEAN_COLORS: readonly BeanColor[] = [
   'purple',
   'black',
   'blue',
+  'green',
 ] as const;
 
 export function isValidBeanColor(value: string): value is BeanColor {

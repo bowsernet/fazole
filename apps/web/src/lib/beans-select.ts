@@ -6,8 +6,9 @@ export interface BeanFilters {
   podType?: PodType;
   plantType?: PlantType;
   yearGrown?: number;
-  beanColor?: BeanColor;
+  beanColors?: BeanColor[];
   sourceId?: string;
+  grown?: 'yes' | 'no';
 }
 
 export interface SelectBeansOptions {
@@ -36,9 +37,10 @@ export function filterBeans(beans: Bean[], filters: BeanFilters): Bean[] {
       matches(filters.species, bean.species) &&
       matches(filters.podType, bean.podType) &&
       matches(filters.plantType, bean.plantType) &&
-      matches(filters.beanColor, bean.beanColor1) &&
+      matchesColors(filters.beanColors, bean) &&
       matches(filters.sourceId, bean.sourceId) &&
-      (filters.yearGrown === undefined || bean.yearsGrown.includes(filters.yearGrown))
+      (filters.yearGrown === undefined || bean.yearsGrown.includes(filters.yearGrown)) &&
+      matchesGrown(filters.grown, bean)
   );
 }
 
@@ -66,6 +68,19 @@ function compare(a: string | number, b: string | number): number {
 
 function matches<T>(filterValue: T | undefined, beanValue: T | undefined): boolean {
   return filterValue === undefined || beanValue === filterValue;
+}
+
+function matchesColors(selected: BeanColor[] | undefined, bean: Bean): boolean {
+  if (!selected || selected.length === 0) return true;
+  const beanColors = [bean.beanColor1, bean.beanColor2, bean.beanColor3];
+  return selected.every((color) => beanColors.includes(color));
+}
+
+function matchesGrown(grown: 'yes' | 'no' | undefined, bean: Bean): boolean {
+  if (grown === undefined) return true;
+  // Missing/empty yearsGrown counts as never grown (0).
+  const hasGrown = (bean.yearsGrown ?? []).length > 0;
+  return grown === 'yes' ? hasGrown : !hasGrown;
 }
 
 const collator = new Intl.Collator(undefined, { sensitivity: 'base' });

@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import { Outlet } from 'react-router';
 
-import { AppShell, Container } from '@mantine/core';
+import { AppShell } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 
 import { AppFooter } from './AppFooter';
@@ -20,9 +20,7 @@ export function AppLayout(): ReactElement {
       <AppNavbar opened={opened} onToggle={toggle} />
       <AppFooter />
       <AppShell.Main>
-        <Container size="lg">
-          <Outlet />
-        </Container>
+        <Outlet />
       </AppShell.Main>
     </AppShell>
   );

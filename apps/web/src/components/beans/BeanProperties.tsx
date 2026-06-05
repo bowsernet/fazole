@@ -4,20 +4,12 @@ import { Badge, Box, Group, Paper, SimpleGrid, Stack, Text, Title } from '@manti
 
 import type { Bean, Source } from '@fazole/common';
 
+import { BEAN_COLOR_CSS } from '../../lib/bean-color-css';
+
 interface BeanPropertiesProps {
   bean: Bean;
   source?: Source | null;
 }
-
-const BEAN_COLOR_CSS: Record<string, string> = {
-  white: '#f8f9fa',
-  yellow: '#fcc419',
-  brown: '#a0522d',
-  pink: '#f783ac',
-  red: '#e03131',
-  purple: '#9c36b5',
-  black: '#212529',
-};
 
 export function BeanProperties({ bean, source }: BeanPropertiesProps): ReactElement {
   const colors = [bean.beanColor1, bean.beanColor2, bean.beanColor3].filter(Boolean);

@@ -3,16 +3,19 @@ import type { ReactElement } from 'react';
 import { ActionIcon, Collapse, Group, Select, Stack } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
-import type { Source } from '@fazole/common';
+import type { BeanColor, Source } from '@fazole/common';
 import { IconFilter, IconFilterOff } from '@tabler/icons-react';
+
+import { BeanColorFilter } from './BeanColorFilter';
 
 export interface BeanFiltersState {
   species: string | null;
   podType: string | null;
   plantType: string | null;
   yearGrown: string | null;
-  beanColor: string | null;
+  beanColors: BeanColor[];
   sourceId: string | null;
+  grown: string | null;
 }
 
 interface BeanFiltersProps {
@@ -39,14 +42,9 @@ const PLANT_TYPE_OPTIONS = [
   { value: 'runner', label: 'Runner' },
 ];
 
-const COLOR_OPTIONS = [
-  { value: 'white', label: 'White' },
-  { value: 'yellow', label: 'Yellow' },
-  { value: 'brown', label: 'Brown' },
-  { value: 'pink', label: 'Pink' },
-  { value: 'red', label: 'Red' },
-  { value: 'purple', label: 'Purple' },
-  { value: 'black', label: 'Black' },
+const GROWN_OPTIONS = [
+  { value: 'yes', label: 'Yes' },
+  { value: 'no', label: 'No' },
 ];
 
 export function BeanFilters({ filters, onChange, sources, yearOptions }: BeanFiltersProps): ReactElement {
@@ -54,11 +52,11 @@ export function BeanFilters({ filters, onChange, sources, yearOptions }: BeanFil
   const isSmall = useMediaQuery('(max-width: 48em)');
   const [opened, { toggle }] = useDisclosure(false);
 
-  function updateFilter(key: keyof BeanFiltersState, value: string | null): void {
+  function updateFilter<K extends keyof BeanFiltersState>(key: K, value: BeanFiltersState[K]): void {
     onChange({ ...filters, [key]: value });
   }
 
-  const hasActiveFilters = Object.values(filters).some((v) => v !== null);
+  const hasActiveFilters = Object.values(filters).some((v) => (Array.isArray(v) ? v.length > 0 : v !== null));
 
   const filterSelects = (
     <>
@@ -99,11 +97,11 @@ export function BeanFilters({ filters, onChange, sources, yearOptions }: BeanFil
         size="sm"
       />
       <Select
-        label="Color"
+        label="Grown"
         placeholder="All"
-        data={COLOR_OPTIONS}
-        value={filters.beanColor}
-        onChange={(v) => updateFilter('beanColor', v)}
+        data={GROWN_OPTIONS}
+        value={filters.grown}
+        onChange={(v) => updateFilter('grown', v)}
         clearable
         size="sm"
       />
@@ -116,6 +114,7 @@ export function BeanFilters({ filters, onChange, sources, yearOptions }: BeanFil
         clearable
         size="sm"
       />
+      <BeanColorFilter value={filters.beanColors} onChange={(v) => updateFilter('beanColors', v)} />
     </>
   );
 

@@ -60,6 +60,8 @@ function mapBeanColorToMantine(color: string): string {
     red: 'red',
     purple: 'grape',
     black: 'dark',
+    blue: 'blue',
+    green: 'green',
   };
   return map[color] ?? 'gray';
 }

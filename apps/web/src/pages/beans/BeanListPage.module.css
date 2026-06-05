@@ -1,0 +1,10 @@
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--mantine-spacing-md);
+}

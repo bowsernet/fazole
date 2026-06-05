@@ -1,7 +1,7 @@
 export type BeanSpecies = 'vulgaris' | 'lima' | 'scarlet';
 export type PodType = 'snap' | 'dry';
 export type PlantType = 'bush' | 'semi' | 'runner';
-export type BeanColor = 'white' | 'yellow' | 'brown' | 'pink' | 'red' | 'purple' | 'black' | 'blue';
+export type BeanColor = 'white' | 'yellow' | 'brown' | 'pink' | 'red' | 'purple' | 'black' | 'blue' | 'green';
 
 export interface Bean {
   id: string;

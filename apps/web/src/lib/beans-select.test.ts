@@ -1,5 +1,6 @@
-import type { Bean } from '@fazole/common';
 import { describe, expect, it } from 'vitest';
+
+import type { Bean } from '@fazole/common';
 
 import { filterBeans, selectBeans, sortBeans } from './beans-select';
 
@@ -17,9 +18,17 @@ function makeBean(overrides: Partial<Bean> & { id: string; name: string }): Bean
 }
 
 const beans: Bean[] = [
-  makeBean({ id: '1', name: 'Cranberry', beanSize: 12, beanColor1: 'red', sourceId: 's1', yearsGrown: [2023, 2024] }),
+  makeBean({
+    id: '1',
+    name: 'Cranberry',
+    beanSize: 12,
+    beanColor1: 'red',
+    beanColor2: 'white',
+    sourceId: 's1',
+    yearsGrown: [2023, 2024],
+  }),
   makeBean({ id: '2', name: 'Apple', beanSize: 8, beanColor1: 'white', sourceId: 's2', yearsGrown: [2024] }),
-  makeBean({ id: '3', name: 'Borlotti', beanColor1: 'pink', sourceId: 's1', yearsGrown: [2022] }),
+  makeBean({ id: '3', name: 'Borlotti', beanColor1: 'pink', beanColor2: 'red', sourceId: 's1', yearsGrown: [2022] }),
 ];
 
 describe('filterBeans', () => {
@@ -28,8 +37,21 @@ describe('filterBeans', () => {
   });
 
   it('filters by equality fields', () => {
-    expect(filterBeans(beans, { beanColor: 'white' }).map((b) => b.id)).toEqual(['2']);
     expect(filterBeans(beans, { sourceId: 's1' }).map((b) => b.id)).toEqual(['1', '3']);
+  });
+
+  it('filters by a single color matching any of a bean’s color slots', () => {
+    expect(filterBeans(beans, { beanColors: ['white'] }).map((b) => b.id)).toEqual(['1', '2']);
+    expect(filterBeans(beans, { beanColors: ['red'] }).map((b) => b.id)).toEqual(['1', '3']);
+  });
+
+  it('filters by multiple colors requiring all to be present (AND)', () => {
+    expect(filterBeans(beans, { beanColors: ['red', 'white'] }).map((b) => b.id)).toEqual(['1']);
+    expect(filterBeans(beans, { beanColors: ['pink', 'white'] }).map((b) => b.id)).toEqual([]);
+  });
+
+  it('ignores an empty color selection', () => {
+    expect(filterBeans(beans, { beanColors: [] })).toHaveLength(3);
   });
 
   it('filters by yearGrown via yearsGrown membership', () => {
@@ -38,6 +60,19 @@ describe('filterBeans', () => {
 
   it('combines multiple filters (AND)', () => {
     expect(filterBeans(beans, { sourceId: 's1', yearGrown: 2024 }).map((b) => b.id)).toEqual(['1']);
+  });
+
+  it('filters grown=yes to beans with at least one year grown', () => {
+    expect(filterBeans(beans, { grown: 'yes' }).map((b) => b.id)).toEqual(['1', '2', '3']);
+  });
+
+  it('filters grown=no to beans never grown, treating empty or missing yearsGrown as 0', () => {
+    const withUngrown = [
+      ...beans,
+      makeBean({ id: '4', name: 'Dwarf', yearsGrown: [] }),
+      makeBean({ id: '5', name: 'Edamame', yearsGrown: undefined as unknown as number[] }),
+    ];
+    expect(filterBeans(withUngrown, { grown: 'no' }).map((b) => b.id)).toEqual(['4', '5']);
   });
 });
 

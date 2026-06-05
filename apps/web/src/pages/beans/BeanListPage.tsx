@@ -1,10 +1,10 @@
 import type { ReactElement } from 'react';
 import { Link } from 'react-router';
 
-import { Button, Group, SegmentedControl, SimpleGrid, Stack, Title } from '@mantine/core';
+import { Box, Button, Group, SegmentedControl, Stack, Title } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 
-import type { BeanColor, BeanSpecies, PlantType, PodType } from '@fazole/common';
+import type { BeanSpecies, PlantType, PodType } from '@fazole/common';
 import { IconPlus } from '@tabler/icons-react';
 
 import { BeanCard, BeanFilters, BeanTable } from '../../components/beans';
@@ -13,6 +13,7 @@ import { useAuth } from '../../hooks/use-auth';
 import { selectBeans } from '../../lib/beans-select';
 import { useBeans } from '../../lib/queries/beans';
 import { useSources } from '../../lib/queries/sources';
+import classes from './BeanListPage.module.css';
 import { useBeanListParams } from './use-bean-list-params';
 
 export function BeanListPage(): ReactElement {
@@ -29,8 +30,9 @@ export function BeanListPage(): ReactElement {
       podType: (filters.podType as PodType) ?? undefined,
       plantType: (filters.plantType as PlantType) ?? undefined,
       yearGrown: filters.yearGrown ? Number(filters.yearGrown) : undefined,
-      beanColor: (filters.beanColor as BeanColor) ?? undefined,
+      beanColors: filters.beanColors.length > 0 ? filters.beanColors : undefined,
       sourceId: filters.sourceId ?? undefined,
+      grown: (filters.grown as 'yes' | 'no') ?? undefined,
     },
     sortField: sort.field,
     sortDir: sort.dir,
@@ -73,7 +75,7 @@ export function BeanListPage(): ReactElement {
             <BeanFilters filters={filters} onChange={setFilters} sources={sources ?? []} yearOptions={yearOptions} />
           )}
 
-          <Stack gap="md" style={{ flex: 1, minWidth: 0 }}>
+          <Stack gap="md" className={classes.content}>
             {isLoading && <LoadingState />}
             {isError && <ErrorState message={error.message} onRetry={refetch} />}
             {!isLoading && !isError && beans.length === 0 && <EmptyState message="No beans found." />}
@@ -81,11 +83,11 @@ export function BeanListPage(): ReactElement {
             {!isLoading && !isError && beans.length > 0 && (
               <>
                 {view === 'card' ? (
-                  <SimpleGrid cols={{ base: 1, xs: 2, sm: 3, lg: 3 }} spacing="md">
+                  <Box className={classes.cardGrid}>
                     {beans.map((bean) => (
                       <BeanCard key={bean.id} bean={bean} />
                     ))}
-                  </SimpleGrid>
+                  </Box>
                 ) : (
                   <BeanTable beans={beans} sort={sort} onSort={setSort} />
                 )}

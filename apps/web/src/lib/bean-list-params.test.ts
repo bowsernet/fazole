@@ -3,7 +3,15 @@ import { describe, expect, it } from 'vitest';
 import { type BeanListState, parseParams, toSearchParams } from './bean-list-params';
 
 const DEFAULT_STATE: BeanListState = {
-  filters: { species: null, podType: null, plantType: null, yearGrown: null, beanColor: null, sourceId: null },
+  filters: {
+    species: null,
+    podType: null,
+    plantType: null,
+    yearGrown: null,
+    beanColors: [],
+    sourceId: null,
+    grown: null,
+  },
   sort: { field: 'name', dir: 'asc' },
   view: 'card',
   loaded: 1,
@@ -15,14 +23,19 @@ describe('parseParams', () => {
   });
 
   it('parses filters, sort, view and loaded', () => {
-    const params = new URLSearchParams('species=lima&pod=dry&color=red&sort=beanWeight.desc&view=table&loaded=3');
+    const params = new URLSearchParams('species=lima&pod=dry&color=red,white&sort=beanWeight.desc&view=table&loaded=3');
     const state = parseParams(params);
     expect(state.filters.species).toBe('lima');
     expect(state.filters.podType).toBe('dry');
-    expect(state.filters.beanColor).toBe('red');
+    expect(state.filters.beanColors).toEqual(['red', 'white']);
     expect(state.sort).toEqual({ field: 'beanWeight', dir: 'desc' });
     expect(state.view).toBe('table');
     expect(state.loaded).toBe(3);
+  });
+
+  it('drops unknown colors and yields an empty array when none remain', () => {
+    expect(parseParams(new URLSearchParams('color=red,bogus')).filters.beanColors).toEqual(['red']);
+    expect(parseParams(new URLSearchParams('color=bogus')).filters.beanColors).toEqual([]);
   });
 
   it('falls back to defaults for malformed sort, view, loaded', () => {
@@ -41,7 +54,13 @@ describe('toSearchParams', () => {
 
   it('serializes non-defaults and round-trips', () => {
     const state: BeanListState = {
-      filters: { ...DEFAULT_STATE.filters, sourceId: 's1', yearGrown: '2025' },
+      filters: {
+        ...DEFAULT_STATE.filters,
+        sourceId: 's1',
+        yearGrown: '2025',
+        grown: 'yes',
+        beanColors: ['red', 'white'],
+      },
       sort: { field: 'beanSize', dir: 'desc' },
       view: 'table',
       loaded: 2,

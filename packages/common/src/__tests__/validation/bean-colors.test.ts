@@ -7,13 +7,15 @@ describe('bean colors', () => {
     expect(BEAN_COLORS).toContain('white');
     expect(BEAN_COLORS).toContain('black');
     expect(BEAN_COLORS).toContain('blue');
-    expect(BEAN_COLORS).toHaveLength(8);
+    expect(BEAN_COLORS).toContain('green');
+    expect(BEAN_COLORS).toHaveLength(9);
   });
 
   it('should validate valid colors', () => {
     expect(isValidBeanColor('red')).toBe(true);
     expect(isValidBeanColor('purple')).toBe(true);
     expect(isValidBeanColor('blue')).toBe(true);
+    expect(isValidBeanColor('green')).toBe(true);
   });
 
   it('should reject invalid colors', () => {

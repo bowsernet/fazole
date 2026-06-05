@@ -4,6 +4,7 @@
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "dev": "turbo dev",
+    "dev:prod": "turbo dev:prod --filter=@fazole/web",
     "build": "turbo build",
     "lint": "turbo lint",
     "test": "turbo test",

@@ -2,6 +2,7 @@ import type { Bean, BeanColor, BeanSpecies, PlantType, PodType } from '@fazole/c
 import { PAGINATION_PAGE_SIZE } from '@fazole/config';
 
 export interface BeanFilters {
+  search?: string;
   species?: BeanSpecies;
   podType?: PodType;
   plantType?: PlantType;
@@ -34,6 +35,7 @@ export function selectBeans(
 export function filterBeans(beans: Bean[], filters: BeanFilters): Bean[] {
   return beans.filter(
     (bean) =>
+      matchesSearch(filters.search, bean) &&
       matches(filters.species, bean.species) &&
       matches(filters.podType, bean.podType) &&
       matches(filters.plantType, bean.plantType) &&
@@ -68,6 +70,12 @@ function compare(a: string | number, b: string | number): number {
 
 function matches<T>(filterValue: T | undefined, beanValue: T | undefined): boolean {
   return filterValue === undefined || beanValue === filterValue;
+}
+
+function matchesSearch(search: string | undefined, bean: Bean): boolean {
+  const term = search?.trim().toLowerCase();
+  if (!term) return true;
+  return bean.name.toLowerCase().includes(term);
 }
 
 function matchesColors(selected: BeanColor[] | undefined, bean: Bean): boolean {

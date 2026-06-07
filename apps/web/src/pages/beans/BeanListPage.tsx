@@ -26,6 +26,7 @@ export function BeanListPage(): ReactElement {
 
   const { beans, hasMore } = selectBeans(allBeans ?? [], {
     filters: {
+      search: filters.search ?? undefined,
       species: (filters.species as BeanSpecies) ?? undefined,
       podType: (filters.podType as PodType) ?? undefined,
       plantType: (filters.plantType as PlantType) ?? undefined,

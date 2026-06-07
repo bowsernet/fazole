@@ -36,6 +36,16 @@ describe('filterBeans', () => {
     expect(filterBeans(beans, {})).toHaveLength(3);
   });
 
+  it('filters by case-insensitive substring of the name', () => {
+    expect(filterBeans(beans, { search: 'rr' }).map((b) => b.id)).toEqual(['1']);
+    expect(filterBeans(beans, { search: 'BeRrY' }).map((b) => b.id)).toEqual(['1']);
+  });
+
+  it('ignores an empty or whitespace-only search', () => {
+    expect(filterBeans(beans, { search: '' })).toHaveLength(3);
+    expect(filterBeans(beans, { search: '   ' })).toHaveLength(3);
+  });
+
   it('filters by equality fields', () => {
     expect(filterBeans(beans, { sourceId: 's1' }).map((b) => b.id)).toEqual(['1', '3']);
   });

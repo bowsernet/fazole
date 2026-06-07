@@ -14,6 +14,7 @@ const DEFAULT_SORT: SortState = { field: 'name', dir: 'asc' };
 type StringFilterKey = Exclude<keyof BeanFiltersState, 'beanColors'>;
 
 const FILTER_PARAMS: Record<StringFilterKey, string> = {
+  search: 'q',
   species: 'species',
   podType: 'pod',
   plantType: 'plant',

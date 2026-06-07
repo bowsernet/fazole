@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 
-import { ActionIcon, Collapse, Group, Select, Stack } from '@mantine/core';
+import { ActionIcon, Collapse, Group, Select, Stack, TextInput } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 
 import type { BeanColor, Source } from '@fazole/common';
@@ -9,6 +9,7 @@ import { IconFilter, IconFilterOff } from '@tabler/icons-react';
 import { BeanColorFilter } from './BeanColorFilter';
 
 export interface BeanFiltersState {
+  search: string | null;
   species: string | null;
   podType: string | null;
   plantType: string | null;
@@ -60,6 +61,13 @@ export function BeanFilters({ filters, onChange, sources, yearOptions }: BeanFil
 
   const filterSelects = (
     <>
+      <TextInput
+        label="Search"
+        placeholder="Bean name"
+        value={filters.search ?? ''}
+        onChange={(e) => updateFilter('search', e.currentTarget.value || null)}
+        size="sm"
+      />
       <Select
         label="Species"
         placeholder="All"

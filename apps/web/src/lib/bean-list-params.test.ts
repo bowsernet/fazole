@@ -4,6 +4,7 @@ import { type BeanListState, parseParams, toSearchParams } from './bean-list-par
 
 const DEFAULT_STATE: BeanListState = {
   filters: {
+    search: null,
     species: null,
     podType: null,
     plantType: null,
@@ -23,8 +24,11 @@ describe('parseParams', () => {
   });
 
   it('parses filters, sort, view and loaded', () => {
-    const params = new URLSearchParams('species=lima&pod=dry&color=red,white&sort=beanWeight.desc&view=table&loaded=3');
+    const params = new URLSearchParams(
+      'q=cran&species=lima&pod=dry&color=red,white&sort=beanWeight.desc&view=table&loaded=3'
+    );
     const state = parseParams(params);
+    expect(state.filters.search).toBe('cran');
     expect(state.filters.species).toBe('lima');
     expect(state.filters.podType).toBe('dry');
     expect(state.filters.beanColors).toEqual(['red', 'white']);
@@ -56,6 +60,7 @@ describe('toSearchParams', () => {
     const state: BeanListState = {
       filters: {
         ...DEFAULT_STATE.filters,
+        search: 'cran',
         sourceId: 's1',
         yearGrown: '2025',
         grown: 'yes',

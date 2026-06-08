@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { ReactElement } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { Button, Group, NumberInput, Select, Stack } from '@mantine/core';
+import { Button, Group, NumberInput, Select, Stack, Textarea } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { notifications } from '@mantine/notifications';
 
@@ -19,6 +19,10 @@ export interface GrowRecordFormValues {
   flowerDate: string | null;
   harvestStartDate: string | null;
   harvestEndDate: string | null;
+  numPlanted: number | string;
+  yield: number | string;
+  location: string;
+  note: string;
 }
 
 interface GrowRecordFormProps {
@@ -47,6 +51,10 @@ export function GrowRecordForm({ record, beans, defaultBeanId, onSave, onCancel 
       flowerDate: epochToDateString(record?.flowerDate),
       harvestStartDate: epochToDateString(record?.harvestStartDate),
       harvestEndDate: epochToDateString(record?.harvestEndDate),
+      numPlanted: record?.numPlanted ?? '',
+      yield: record?.yield ?? '',
+      location: record?.location ?? '',
+      note: record?.note ?? '',
     },
   });
 
@@ -155,6 +163,50 @@ export function GrowRecordForm({ record, beans, defaultBeanId, onSave, onCancel 
             )}
           />
         </Group>
+
+        <Group grow>
+          <Controller
+            name="numPlanted"
+            control={control}
+            render={({ field }) => (
+              <NumberInput
+                label="Number Planted"
+                placeholder="e.g. 12"
+                min={0}
+                {...field}
+                onChange={(v) => field.onChange(v)}
+              />
+            )}
+          />
+          <Controller
+            name="yield"
+            control={control}
+            render={({ field }) => (
+              <NumberInput
+                label="Yield"
+                placeholder="e.g. 250"
+                min={0}
+                suffix=" g"
+                {...field}
+                onChange={(v) => field.onChange(v)}
+              />
+            )}
+          />
+        </Group>
+
+        <Controller
+          name="location"
+          control={control}
+          render={({ field }) => (
+            <Textarea label="Location" placeholder="Where it was grown" autosize minRows={2} {...field} />
+          )}
+        />
+
+        <Controller
+          name="note"
+          control={control}
+          render={({ field }) => <Textarea label="Note" placeholder="Notes" autosize minRows={2} {...field} />}
+        />
 
         <Group justify="flex-end">
           <Button variant="default" onClick={onCancel}>

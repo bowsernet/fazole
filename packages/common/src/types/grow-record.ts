@@ -8,6 +8,10 @@ export interface GrowRecord {
   flowerDate?: number | null;
   harvestStartDate?: number | null;
   harvestEndDate?: number | null;
+  location?: string | null;
+  note?: string | null;
+  numPlanted?: number | null;
+  yield?: number | null;
   deletedAt?: number | null;
   createdAt: number;
   updatedAt: number;

@@ -82,6 +82,10 @@ export function GrowRecordTable({
             <Table.Th>Flowered</Table.Th>
             <Table.Th>Harvest Start</Table.Th>
             <Table.Th>Harvest End</Table.Th>
+            <Table.Th>Plants</Table.Th>
+            <Table.Th>Yield</Table.Th>
+            <Table.Th>Location</Table.Th>
+            <Table.Th>Note</Table.Th>
             {isAdmin && <Table.Th>Actions</Table.Th>}
           </Table.Tr>
         </Table.Thead>
@@ -108,6 +112,10 @@ export function GrowRecordTable({
                 <Table.Td>{formatDate(record.flowerDate)}</Table.Td>
                 <Table.Td>{formatDate(record.harvestStartDate)}</Table.Td>
                 <Table.Td>{formatDate(record.harvestEndDate)}</Table.Td>
+                <Table.Td>{record.numPlanted ?? '-'}</Table.Td>
+                <Table.Td>{record.yield != null ? `${record.yield} g` : '-'}</Table.Td>
+                <Table.Td>{formatText(record.location)}</Table.Td>
+                <Table.Td>{formatText(record.note)}</Table.Td>
                 {isAdmin && (
                   <Table.Td>
                     <Group gap="xs">
@@ -159,4 +167,13 @@ function SortableHeader({ field, label, sort, onSort }: SortableHeaderProps): Re
 function formatDate(epoch?: number | null): string {
   if (!epoch) return '-';
   return new Date(epoch).toLocaleDateString();
+}
+
+function formatText(value?: string | null): ReactElement {
+  if (!value) return <>-</>;
+  return (
+    <Text size="sm" lineClamp={2} maw={200} style={{ whiteSpace: 'pre-wrap' }}>
+      {value}
+    </Text>
+  );
 }

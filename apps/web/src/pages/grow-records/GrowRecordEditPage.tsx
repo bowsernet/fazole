@@ -35,6 +35,10 @@ export function GrowRecordEditPage(): ReactElement {
       flowerDate: dateStringToEpoch(values.flowerDate),
       harvestStartDate: dateStringToEpoch(values.harvestStartDate),
       harvestEndDate: dateStringToEpoch(values.harvestEndDate),
+      numPlanted: values.numPlanted === '' ? undefined : Number(values.numPlanted),
+      yield: values.yield === '' ? undefined : Number(values.yield),
+      location: values.location.trim() || undefined,
+      note: values.note.trim() || undefined,
     };
 
     if (isNew) {

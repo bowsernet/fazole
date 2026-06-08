@@ -156,7 +156,7 @@ function SortableHeader({ field, label, sort, onSort }: SortableHeaderProps): Re
   );
 }
 
-function formatDate(epoch?: number): string {
+function formatDate(epoch?: number | null): string {
   if (!epoch) return '-';
   return new Date(epoch).toLocaleDateString();
 }

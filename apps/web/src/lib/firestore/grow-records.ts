@@ -18,6 +18,7 @@ import {
 } from 'firebase/firestore';
 
 import { db } from '../firebase';
+import { nullifyUndefined } from './nullify';
 
 const growRecordsRef = collection(db, 'growRecords');
 
@@ -70,7 +71,7 @@ export async function fetchGrowRecord(id: string): Promise<GrowRecord> {
 
 export async function createGrowRecord(data: Omit<GrowRecord, 'id' | 'createdAt' | 'updatedAt'>): Promise<string> {
   const docRef = await addDoc(growRecordsRef, {
-    ...data,
+    ...nullifyUndefined(data),
     deletedAt: null,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -80,7 +81,7 @@ export async function createGrowRecord(data: Omit<GrowRecord, 'id' | 'createdAt'
 
 export async function updateGrowRecord(id: string, data: Partial<GrowRecord>): Promise<void> {
   await updateDoc(doc(db, 'growRecords', id), {
-    ...data,
+    ...nullifyUndefined(data),
     updatedAt: serverTimestamp(),
   });
 }

@@ -106,7 +106,7 @@ export function BeanGrowHistory({ records, isAdmin, onEdit, onDeleted }: BeanGro
   );
 }
 
-function formatDate(epoch?: number): string {
+function formatDate(epoch?: number | null): string {
   if (!epoch) return '-';
   return new Date(epoch).toLocaleDateString();
 }

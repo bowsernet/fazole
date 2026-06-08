@@ -8,15 +8,17 @@ import { notifications } from '@mantine/notifications';
 
 import type { Bean, GrowRecord } from '@fazole/common';
 
+import { epochToDateString } from '../../lib/grow-record-dates';
+
 export interface GrowRecordFormValues {
   beanId: string | null;
   year: number | string;
-  preplantDate: Date | null;
-  plantDate: Date | null;
-  sproutDate: Date | null;
-  flowerDate: Date | null;
-  harvestStartDate: Date | null;
-  harvestEndDate: Date | null;
+  preplantDate: string | null;
+  plantDate: string | null;
+  sproutDate: string | null;
+  flowerDate: string | null;
+  harvestStartDate: string | null;
+  harvestEndDate: string | null;
 }
 
 interface GrowRecordFormProps {
@@ -39,12 +41,12 @@ export function GrowRecordForm({ record, beans, defaultBeanId, onSave, onCancel 
     values: {
       beanId: record?.beanId ?? defaultBeanId ?? null,
       year: record?.year ?? new Date().getFullYear(),
-      preplantDate: epochToDate(record?.preplantDate),
-      plantDate: epochToDate(record?.plantDate),
-      sproutDate: epochToDate(record?.sproutDate),
-      flowerDate: epochToDate(record?.flowerDate),
-      harvestStartDate: epochToDate(record?.harvestStartDate),
-      harvestEndDate: epochToDate(record?.harvestEndDate),
+      preplantDate: epochToDateString(record?.preplantDate),
+      plantDate: epochToDateString(record?.plantDate),
+      sproutDate: epochToDateString(record?.sproutDate),
+      flowerDate: epochToDateString(record?.flowerDate),
+      harvestStartDate: epochToDateString(record?.harvestStartDate),
+      harvestEndDate: epochToDateString(record?.harvestEndDate),
     },
   });
 
@@ -168,9 +170,4 @@ export function GrowRecordForm({ record, beans, defaultBeanId, onSave, onCancel 
       </Stack>
     </form>
   );
-}
-
-function epochToDate(epoch?: number): Date | null {
-  if (!epoch) return null;
-  return new Date(epoch);
 }

@@ -6,6 +6,7 @@ import { Stack, Title } from '@mantine/core';
 import { GrowRecordForm } from '../../components/grow-records';
 import type { GrowRecordFormValues } from '../../components/grow-records/GrowRecordForm';
 import { ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
+import { dateStringToEpoch } from '../../lib/grow-record-dates';
 import { useBeans } from '../../lib/queries/beans';
 import { useCreateGrowRecord, useGrowRecord, useUpdateGrowRecord } from '../../lib/queries/grow-records';
 
@@ -28,12 +29,12 @@ export function GrowRecordEditPage(): ReactElement {
     const data = {
       beanId: values.beanId!,
       year: typeof values.year === 'number' ? values.year : Number(values.year),
-      preplantDate: dateToEpoch(values.preplantDate),
-      plantDate: dateToEpoch(values.plantDate),
-      sproutDate: dateToEpoch(values.sproutDate),
-      flowerDate: dateToEpoch(values.flowerDate),
-      harvestStartDate: dateToEpoch(values.harvestStartDate),
-      harvestEndDate: dateToEpoch(values.harvestEndDate),
+      preplantDate: dateStringToEpoch(values.preplantDate),
+      plantDate: dateStringToEpoch(values.plantDate),
+      sproutDate: dateStringToEpoch(values.sproutDate),
+      flowerDate: dateStringToEpoch(values.flowerDate),
+      harvestStartDate: dateStringToEpoch(values.harvestStartDate),
+      harvestEndDate: dateStringToEpoch(values.harvestEndDate),
     };
 
     if (isNew) {
@@ -68,9 +69,4 @@ export function GrowRecordEditPage(): ReactElement {
       </Stack>
     </>
   );
-}
-
-function dateToEpoch(date: Date | null): number | undefined {
-  if (!date) return undefined;
-  return date.getTime();
 }

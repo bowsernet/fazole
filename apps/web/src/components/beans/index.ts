@@ -6,6 +6,5 @@ export { BeanFilters } from './BeanFilters';
 export type { BeanFiltersState } from './BeanFilters';
 export { BeanImageGallery } from './BeanImageGallery';
 export { BeanProperties } from './BeanProperties';
-export { BeanGrowHistory } from './BeanGrowHistory';
 export { BeanForm } from './BeanForm';
 export { BeanImageManager } from './BeanImageManager';

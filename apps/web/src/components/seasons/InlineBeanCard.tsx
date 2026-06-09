@@ -5,13 +5,15 @@ import { Anchor, Group, Image, Text } from '@mantine/core';
 
 import type { Bean, BeanImage } from '@fazole/common';
 
+import { getBeanThumbUrl } from '../../lib/bean-image-url';
+
 interface InlineBeanCardProps {
   bean: Bean;
   images: BeanImage[];
 }
 
 export function InlineBeanCard({ bean, images }: InlineBeanCardProps): ReactElement {
-  const thumbUrl = getThumbUrl(images);
+  const thumbUrl = getBeanThumbUrl(images);
 
   return (
     <Anchor component={Link} to={`/beans/${bean.id}`} underline="never">
@@ -23,11 +25,4 @@ export function InlineBeanCard({ bean, images }: InlineBeanCardProps): ReactElem
       </Group>
     </Anchor>
   );
-}
-
-function getThumbUrl(images: BeanImage[]): string | undefined {
-  const closeup = images.find((img) => img.type === 'closeup');
-  const source = images.find((img) => img.type === 'source');
-  const preferred = closeup ?? source ?? images[0];
-  return preferred?.urls.thumb_webp ?? undefined;
 }

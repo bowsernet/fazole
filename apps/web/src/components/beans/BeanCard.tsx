@@ -3,8 +3,9 @@ import { Link } from 'react-router';
 
 import { Badge, Card, Group, Image, Text } from '@mantine/core';
 
-import type { Bean, BeanImage } from '@fazole/common';
+import type { Bean } from '@fazole/common';
 
+import { getBeanPreviewUrl } from '../../lib/bean-image-url';
 import { useBeanImages } from '../../lib/queries/beans';
 
 interface BeanCardProps {
@@ -13,7 +14,7 @@ interface BeanCardProps {
 
 export function BeanCard({ bean }: BeanCardProps): ReactElement {
   const { data: images } = useBeanImages(bean.id);
-  const previewUrl = getPreviewUrl(images ?? []);
+  const previewUrl = getBeanPreviewUrl(images ?? []);
   const lastYear = bean.yearsGrown.length > 0 ? Math.max(...bean.yearsGrown) : null;
 
   return (
@@ -45,11 +46,4 @@ export function BeanCard({ bean }: BeanCardProps): ReactElement {
       )}
     </Card>
   );
-}
-
-function getPreviewUrl(images: BeanImage[]): string | undefined {
-  const closeup = images.find((img) => img.type === 'closeup');
-  const source = images.find((img) => img.type === 'source');
-  const preferred = closeup ?? source ?? images[0];
-  return preferred?.urls.card_webp ?? undefined;
 }

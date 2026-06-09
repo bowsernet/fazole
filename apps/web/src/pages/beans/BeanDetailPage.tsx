@@ -1,12 +1,12 @@
 import type { ReactElement } from 'react';
-import { Link, useNavigate, useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 
 import { Button, Group, Stack, Title } from '@mantine/core';
 
-import type { GrowRecord } from '@fazole/common';
 import { IconEdit, IconPlus } from '@tabler/icons-react';
 
-import { BeanGrowHistory, BeanImageGallery, BeanProperties } from '../../components/beans';
+import { BeanImageGallery, BeanProperties } from '../../components/beans';
+import { GrowRecordTable } from '../../components/grow-records';
 import { ErrorState, LoadingState, PageBreadcrumbs } from '../../components/ui';
 import { useAuth } from '../../hooks/use-auth';
 import { useBean, useBeanImages } from '../../lib/queries/beans';
@@ -16,7 +16,6 @@ import { useSource } from '../../lib/queries/sources';
 export function BeanDetailPage(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const { isAdmin } = useAuth();
-  const navigate = useNavigate();
   const invalidateGrow = useInvalidateGrowRecords();
 
   const { data: bean, isLoading, isError, error, refetch } = useBean(id ?? '');
@@ -64,11 +63,12 @@ export function BeanDetailPage(): ReactElement {
         <BeanProperties bean={bean} source={source ?? null} />
 
         <Title order={3}>Grow History</Title>
-        <BeanGrowHistory
+        <GrowRecordTable
           records={growResult?.records ?? []}
+          beansMap={bean ? { [bean.id]: bean } : {}}
           isAdmin={isAdmin}
-          onEdit={(record: GrowRecord) => navigate(`/grow-records/${record.id}/edit`)}
           onDeleted={invalidateGrow}
+          showBean={false}
         />
       </Stack>
     </>

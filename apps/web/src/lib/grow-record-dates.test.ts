@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { dateStringToEpoch, epochToDateString } from './grow-record-dates';
+import { dateStringToEpoch, epochToDateString, epochToDisplayDate } from './grow-record-dates';
 
 describe('dateStringToEpoch', () => {
   it('converts a Mantine YYYY-MM-DD string to an epoch (regression for t.getTime is not a function)', () => {
@@ -29,5 +29,17 @@ describe('epochToDateString', () => {
   it('round-trips a date string through epoch and back', () => {
     const value = '2025-06-08';
     expect(epochToDateString(dateStringToEpoch(value))).toBe(value);
+  });
+});
+
+describe('epochToDisplayDate', () => {
+  it('returns a dash for null, undefined, or zero', () => {
+    expect(epochToDisplayDate(null)).toBe('-');
+    expect(epochToDisplayDate(undefined)).toBe('-');
+    expect(epochToDisplayDate(0)).toBe('-');
+  });
+
+  it('formats a real epoch as a non-empty localized date', () => {
+    expect(epochToDisplayDate(Date.UTC(2024, 0, 15))).not.toBe('-');
   });
 });

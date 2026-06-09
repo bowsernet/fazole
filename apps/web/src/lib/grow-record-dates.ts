@@ -14,3 +14,8 @@ export function dateStringToEpoch(value: string | null): number | undefined {
   const epoch = new Date(value).getTime();
   return Number.isNaN(epoch) ? undefined : epoch;
 }
+
+export function epochToDisplayDate(epoch?: number | null): string {
+  if (!epoch) return '-';
+  return new Date(epoch).toLocaleDateString();
+}

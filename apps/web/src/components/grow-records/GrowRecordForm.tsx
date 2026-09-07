@@ -183,7 +183,7 @@ export function GrowRecordForm({ record, beans, defaultBeanId, onSave, onCancel 
             control={control}
             render={({ field }) => (
               <NumberInput
-                label="Yield"
+                label="Yield (g)"
                 placeholder="e.g. 250"
                 min={0}
                 suffix=" g"

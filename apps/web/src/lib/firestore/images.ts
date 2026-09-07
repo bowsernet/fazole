@@ -13,6 +13,7 @@ import {
 import { deleteObject, ref, uploadBytes } from 'firebase/storage';
 
 import { db, storage } from '../firebase';
+import { nullifyUndefined } from './nullify';
 
 function imagesRef(beanId: string) {
   return collection(db, 'beans', beanId, 'images');
@@ -53,7 +54,7 @@ export async function uploadBeanImage(
 
 export async function updateBeanImage(beanId: string, imageId: string, data: Partial<BeanImage>): Promise<void> {
   await updateDoc(doc(db, 'beans', beanId, 'images', imageId), {
-    ...data,
+    ...nullifyUndefined(data),
     updatedAt: serverTimestamp(),
   });
 }

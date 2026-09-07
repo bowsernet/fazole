@@ -97,6 +97,16 @@ describe('sortBeans', () => {
     expect(sortBeans(beans, 'beanSize', 'desc').map((b) => b.id)).toEqual(['1', '2', '3']);
   });
 
+  it('sorts null values last, like missing ones', () => {
+    const withNulls = [
+      makeBean({ id: '1', name: 'Cranberry', beanSize: 12 }),
+      makeBean({ id: '2', name: 'Apple', beanSize: null }),
+      makeBean({ id: '3', name: 'Borlotti', beanSize: 8 }),
+    ];
+    expect(sortBeans(withNulls, 'beanSize', 'asc').map((b) => b.id)).toEqual(['3', '1', '2']);
+    expect(sortBeans(withNulls, 'beanSize', 'desc').map((b) => b.id)).toEqual(['1', '3', '2']);
+  });
+
   it('does not mutate the input array', () => {
     const input = [...beans];
     sortBeans(input, 'name', 'desc');

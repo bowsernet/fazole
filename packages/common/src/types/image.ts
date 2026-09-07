@@ -5,7 +5,7 @@ export type ImageType = 'source' | 'closeup' | 'bunch' | 'seedling' | 'flower' |
 export interface BeanImage {
   id: string;
   type: ImageType;
-  year?: number;
+  year?: number | null;
   primary: boolean;
   paths: Partial<Record<`${ImagePresetKey}_${ImageFormat}`, string>>;
   urls: Partial<Record<`${ImagePresetKey}_${ImageFormat}`, string>>;

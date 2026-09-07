@@ -51,16 +51,16 @@ export function sortBeans(beans: Bean[], field: string, dir: 'asc' | 'desc'): Be
   return [...beans].sort((a, b) => {
     const av = sortValue(a, field);
     const bv = sortValue(b, field);
-    // Missing values always sort last, independent of direction.
-    if (av === undefined && bv === undefined) return 0;
-    if (av === undefined) return 1;
-    if (bv === undefined) return -1;
+    // Missing values (undefined or null) always sort last, independent of direction.
+    if (av == null && bv == null) return 0;
+    if (av == null) return 1;
+    if (bv == null) return -1;
     return compare(av, bv) * factor;
   });
 }
 
-function sortValue(bean: Bean, field: string): string | number | undefined {
-  return bean[field as keyof Bean] as string | number | undefined;
+function sortValue(bean: Bean, field: string): string | number | null | undefined {
+  return bean[field as keyof Bean] as string | number | null | undefined;
 }
 
 function compare(a: string | number, b: string | number): number {

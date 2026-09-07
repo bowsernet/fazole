@@ -2,6 +2,7 @@ import type { Bean } from '@fazole/common';
 import { addDoc, collection, doc, getDoc, getDocs, query, serverTimestamp, updateDoc, where } from 'firebase/firestore';
 
 import { db } from '../firebase';
+import { nullifyUndefined } from './nullify';
 
 const beansRef = collection(db, 'beans');
 
@@ -22,7 +23,7 @@ export async function fetchBean(id: string): Promise<Bean> {
 
 export async function createBean(data: Omit<Bean, 'id' | 'createdAt' | 'updatedAt' | 'yearsGrown'>): Promise<string> {
   const docRef = await addDoc(beansRef, {
-    ...data,
+    ...nullifyUndefined(data),
     yearsGrown: [],
     deletedAt: null,
     createdAt: serverTimestamp(),
@@ -33,7 +34,7 @@ export async function createBean(data: Omit<Bean, 'id' | 'createdAt' | 'updatedA
 
 export async function updateBean(id: string, data: Partial<Bean>): Promise<void> {
   await updateDoc(doc(db, 'beans', id), {
-    ...data,
+    ...nullifyUndefined(data),
     updatedAt: serverTimestamp(),
   });
 }

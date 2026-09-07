@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 
 import { Badge, Group, Image, Table, Text } from '@mantine/core';
 
-import type { Bean, BeanImage } from '@fazole/common';
+import type { Bean, BeanColor, BeanImage } from '@fazole/common';
 
 import { useBeanImages } from '../../lib/queries/beans';
 
@@ -37,13 +37,13 @@ export function BeanTableRow({ bean }: BeanTableRowProps): ReactElement {
 }
 
 function BeanColorDisplay({ bean }: { bean: Bean }): ReactElement {
-  const colors = [bean.beanColor1, bean.beanColor2, bean.beanColor3].filter(Boolean);
+  const colors = [bean.beanColor1, bean.beanColor2, bean.beanColor3].filter((c): c is BeanColor => Boolean(c));
   if (colors.length === 0) return <Text size="sm">-</Text>;
 
   return (
     <Group gap={4}>
       {colors.map((color, i) => (
-        <Badge key={i} size="xs" color={mapBeanColorToMantine(color!)}>
+        <Badge key={i} size="xs" color={mapBeanColorToMantine(color)}>
           {color}
         </Badge>
       ))}

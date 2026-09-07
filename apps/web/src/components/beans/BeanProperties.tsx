@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 
 import { Badge, Box, Group, Paper, SimpleGrid, Stack, Text, Title } from '@mantine/core';
 
-import type { Bean, Source } from '@fazole/common';
+import type { Bean, BeanColor, Source } from '@fazole/common';
 
 import { BEAN_COLOR_CSS } from '../../lib/bean-color-css';
 
@@ -12,7 +12,7 @@ interface BeanPropertiesProps {
 }
 
 export function BeanProperties({ bean, source }: BeanPropertiesProps): ReactElement {
-  const colors = [bean.beanColor1, bean.beanColor2, bean.beanColor3].filter(Boolean);
+  const colors = beanColors(bean);
 
   return (
     <Stack gap="md">
@@ -46,7 +46,7 @@ export function BeanProperties({ bean, source }: BeanPropertiesProps): ReactElem
               h={24}
               style={{
                 borderRadius: '50%',
-                backgroundColor: BEAN_COLOR_CSS[color!] ?? '#868e96',
+                backgroundColor: BEAN_COLOR_CSS[color] ?? '#868e96',
                 border: '1px solid var(--mantine-color-gray-4)',
               }}
               title={color}
@@ -75,7 +75,11 @@ export function BeanProperties({ bean, source }: BeanPropertiesProps): ReactElem
   );
 }
 
-function StatBlock({ label, value }: { label: string; value?: number }): ReactElement {
+function beanColors(bean: Bean): BeanColor[] {
+  return [bean.beanColor1, bean.beanColor2, bean.beanColor3].filter((c): c is BeanColor => Boolean(c));
+}
+
+function StatBlock({ label, value }: { label: string; value?: number | null }): ReactElement {
   return (
     <Stack gap={2}>
       <Text size="xs" c="dimmed" tt="uppercase">

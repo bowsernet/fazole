@@ -9,18 +9,18 @@ export interface Bean {
   species: BeanSpecies;
   podType: PodType;
   plantType: PlantType;
-  beansPerPod?: number;
-  beanSize?: number;
-  beanWeight?: number;
-  beanColor1?: BeanColor;
-  beanColor2?: BeanColor;
-  beanColor3?: BeanColor;
+  beansPerPod?: number | null;
+  beanSize?: number | null;
+  beanWeight?: number | null;
+  beanColor1?: BeanColor | null;
+  beanColor2?: BeanColor | null;
+  beanColor3?: BeanColor | null;
   sourceId: string;
-  description?: string;
-  sourceDescription?: string;
+  description?: string | null;
+  sourceDescription?: string | null;
   yearsGrown: number[];
-  deletedInSource?: boolean;
-  deletedAt?: number;
+  deletedInSource?: boolean | null;
+  deletedAt?: number | null;
   createdAt: number;
   updatedAt: number;
 }
